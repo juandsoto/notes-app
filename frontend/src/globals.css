@@ -9,3 +9,17 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+@layer base {
+  body {
+    @apply bg-slate-50;
+  }
+
+  input {
+    @apply p-2 outline-none border border-blue-500 rounded-md shadow-lg;
+  }
+
+  button {
+    @apply shadow-lg rounded-md;
+  }
+}

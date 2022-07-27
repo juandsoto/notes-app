@@ -19,9 +19,7 @@ export const hashPassword = async (password: string) => {
 export function verifyJwt(token: string) {
   try {
     const decoded = jwt.verify(token, JWT_SECRET_KEY);
-    //@ts-ignore
-    const { password, ...rest } = decoded.dataValues;
-    return rest;
+    return decoded;
   } catch (error: any) {
     throw new JsonWebTokenError(error.message);
   }

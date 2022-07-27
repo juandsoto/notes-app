@@ -6,7 +6,7 @@ import { comparePassword, generateToken } from "../utils/jwt";
 import { SignInBody } from "./auth.schema";
 import CustomError from "../exceptions/CustomError";
 
-export const signUpHandler = async (req: Request<{}, {}, UserBody>, res: Response<string>, next: NextFunction) => {
+export const signUpHandler = async (req: Request<{}, {}, UserBody>, res: Response<{}>, next: NextFunction) => {
   try {
     await signUp(req.body);
     return signInHandler(req, res, next);
@@ -15,9 +15,16 @@ export const signUpHandler = async (req: Request<{}, {}, UserBody>, res: Respons
   }
 };
 
-export const signInHandler = async (req: Request<{}, {}, SignInBody>, res: Response<string>, next: NextFunction) => {
+export const signInHandler = async (req: Request<{}, {}, SignInBody>, res: Response<{}>, next: NextFunction) => {
   try {
     const user: any = await signIn(req.body.email);
+
+    if (!user) {
+      throw new CustomError({
+        message: "Invalid email or password",
+        status: StatusCodes.UNAUTHORIZED,
+      });
+    }
 
     if (!user.active) {
       throw new CustomError({
@@ -29,11 +36,14 @@ export const signInHandler = async (req: Request<{}, {}, SignInBody>, res: Respo
 
     const isPasswordCorrect = await comparePassword(user.toJSON().password, req.body.password);
 
-    if (!user || !isPasswordCorrect) {
-      return res.status(StatusCodes.UNAUTHORIZED).send("Invalid email or password");
+    if (!isPasswordCorrect) {
+      throw new CustomError({
+        message: "Invalid email or password",
+        status: StatusCodes.UNAUTHORIZED,
+      });
     }
 
-    const { password, ...rest } = user;
+    const { password, ...rest } = user.dataValues;
 
     const token: string = generateToken(rest);
 
@@ -45,7 +55,7 @@ export const signInHandler = async (req: Request<{}, {}, SignInBody>, res: Respo
       sameSite: "strict",
       secure: false,
     });
-    return res.status(StatusCodes.OK).send(token);
+    return res.status(StatusCodes.OK).json({ ...rest, token });
   } catch (error) {
     return next(error);
   }

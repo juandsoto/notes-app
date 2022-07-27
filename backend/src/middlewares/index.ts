@@ -14,7 +14,7 @@ export const deserializeUser = (req: Request, res: Response<{}, { user: Omit<Use
     const decoded = verifyJwt(accessToken);
 
     if (decoded) {
-      res.locals.user = decoded;
+      res.locals.user = decoded as typeof res.locals.user;
     }
     return next();
   } catch (error) {
@@ -59,19 +59,25 @@ export const isOwnerOrAdmin = (
   return res.status(StatusCodes.UNAUTHORIZED).send("Not authorized");
 };
 
-export const errorHandler = (error: any, req: Request, res: Response<string>, next: NextFunction) => {
+export const errorHandler = (error: any, req: Request, res: Response<{}>, next: NextFunction) => {
   if (!error) return next();
 
   if (error instanceof CustomError) {
-    return res.status(error.status).send(error.message);
+    return res.status(error.status).json({
+      error: error.message,
+    });
   }
 
   switch (error.name) {
     case "user is not active": {
-      return res.status(StatusCodes.FORBIDDEN).send(error.message);
+      return res.status(StatusCodes.FORBIDDEN).json({
+        error: error.message,
+      });
     }
     case "SequelizeUniqueConstraintError": {
-      return res.status(StatusCodes.CONFLICT).send("user with username/email already exists");
+      return res.status(StatusCodes.CONFLICT).json({
+        error: "user with username/email already exists",
+      });
     }
     default: {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
