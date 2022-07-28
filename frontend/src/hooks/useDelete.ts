@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { SERVER_URL } from "../constants";
+
+interface Options {
+  successMessage?: string;
+}
+
 const useDelete = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const remove = async (url: string, config?: RequestInit) => {
+  const remove = async (url: string, config?: RequestInit, props?: Options) => {
     setLoading(true);
     try {
       const response = await fetch(`${SERVER_URL}${url}`, {
@@ -25,6 +30,8 @@ const useDelete = () => {
       if (response.status !== 200) {
         throw new Error(data.error);
       }
+
+      toast.success(props?.successMessage || "");
 
       return {
         data,

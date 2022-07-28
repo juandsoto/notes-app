@@ -52,13 +52,13 @@ const Note = (props: Props) => {
     <motion.button
       disabled={loadingPatch || loadingDelete || loadingNotes}
       layoutId={_id}
-      className="flex flex-1 shadow-lg shadow-slate-500/50 p-3 rounded-md min-w-[250px] max-w-[500px] bg-slate-50"
+      className="flex flex-1 shadow-lg shadow-slate-500/50 p-3 rounded-md min-w-[300px] max-w-[500px] bg-slate-50"
       onClick={() => setSelectedId(_id)}
     >
       <motion.div className="flex flex-col w-full">
         <span className="text-lg capitalize text-left">{title}</span>
         <div className="flex justify-between items-center gap-4">
-          <span className="text-sm">{moment(updatedAt).fromNow()}</span>
+          <span className="text-sm text-left">Actualizada {moment(updatedAt).fromNow()}</span>
           <div className="flex gap-2">
             {loadingPatch || loadingDelete || loadingNotes ? (
               <DotLoader size={20} />
@@ -73,15 +73,6 @@ const Note = (props: Props) => {
                   className="cursor-pointer"
                   color="green"
                 />
-                {/* <Link
-                  to={`/notes/edit/${_id}`}
-                  state={{ _id, title, categories, content }}
-                  onClick={e => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <FaEdit size={20} color="#3b82f6" />
-                </Link> */}
                 <FaEdit
                   onClick={e => {
                     e.stopPropagation();
@@ -105,7 +96,6 @@ const Note = (props: Props) => {
           </div>
         </div>
       </motion.div>
-      {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
     </motion.button>
   );
 };

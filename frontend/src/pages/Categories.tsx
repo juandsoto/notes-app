@@ -47,10 +47,8 @@ const Categories = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl uppercase my-4 font-bold text-primary">Tus Categorías</h2>
-      </div>
-      <div className="flex">
+      <h2 className="text-2xl uppercase font-bold text-primary mb-4 sm:mt-4 text-center sm:text-left">Tus Categorías</h2>
+      <div className="">
         {isLoading && <span className="text-md">Cargando categorías</span>}
         {!categories.length && !isLoading && (
           <div className="flex flex-col gap-1">
@@ -58,7 +56,7 @@ const Categories = () => {
             <span className="text-lg text-darkBlue">Las puedes crear al momento de crear tus notas</span>
           </div>
         )}
-        <div className="flex justify-center flex-wrap gap-6">
+        <div className="flex justify-center sm:justify-start flex-wrap gap-6">
           {categories.map((category, i) => {
             return <Category key={category._id} {...category} index={i} {...{ refetchCategories }} loadingCategories={isLoading} />;
           })}

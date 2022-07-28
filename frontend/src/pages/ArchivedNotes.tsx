@@ -49,11 +49,11 @@ const ArchivedNotes = () => {
 
   return (
     <div className="flex flex-col">
-      <h2 className="text-2xl uppercase my-4 font-bold text-primary">Tus Notas</h2>
-      <div className="flex flex-wrap gap-6">
+      <h2 className="text-2xl uppercase font-bold text-primary mb-4 sm:mt-4 text-center sm:text-left">Tus Notas Archivadas</h2>
+      <div className="">
         {isLoading && <span className="text-md">Cargando notas archivadas</span>}
         {!notes.length && !isLoading && <span className="text-md">No tienes notas archivadas</span>}
-        <div className="flex justify-center flex-wrap gap-6">
+        <div className="flex justify-center sm:justify-start flex-wrap gap-6">
           {notes.map((note, i) => {
             return <Note key={note._id} {...note} index={i} {...{ setSelectedId, refetchNotes }} loadingNotes={isLoading} />;
           })}

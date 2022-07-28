@@ -51,8 +51,8 @@ const Notes = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl uppercase my-4 font-bold text-primary">Tus Notas</h2>
+      <div className="flex justify-between items-center mb-4 sm:mt-4 gap-2">
+        <h2 className="text-2xl uppercase font-bold text-primary text-center sm:text-left">Tus Notas</h2>
         <button>
           <Link to={`/notes/add`} className="flex gap-1 items-center px-2 py-1 rounded-md">
             <span className="text-green-700 text-md font-semibold">Agregar</span>
@@ -61,8 +61,8 @@ const Notes = () => {
         </button>
       </div>
       <div className="flex">
-        {isLoading && <span className="text-md">Cargando notas</span>}
-        {!notes.length && !isLoading && <span className="text-md">No tienes notas</span>}
+        {isLoading && <span className="text-md flex-1">Cargando notas</span>}
+        {!notes.length && !isLoading && <span className="text-md flex-1">No tienes notas</span>}
         <div className="flex justify-center flex-wrap gap-6">
           {notes.map((note, i) => {
             return <Note key={note._id} {...note} index={i} {...{ setSelectedId, refetchNotes }} loadingNotes={isLoading} />;

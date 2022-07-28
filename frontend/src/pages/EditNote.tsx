@@ -7,6 +7,7 @@ import { useAuth } from "../context/auth/index";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import usePatch from "../hooks/usePatch";
 import { NoteSchema } from "../types";
+import useDelete from "../hooks/useDelete";
 const EditNote = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -16,10 +17,29 @@ const EditNote = () => {
   const [category, setCategory] = useState<string>("");
   const [categoryError, setCategoryError] = useState<string>("");
   const { loadingPatch, patch } = usePatch();
+  const { loadingDelete, remove } = useDelete();
+
+  const removeCategory = async (name: string) => {
+    if (!note.categories.map(c => c.name).includes(name)) return;
+
+    const id = note.categories.find(c => c.name === name)?.noteCategories._id;
+
+    const data = await remove(
+      `/noteCategories/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+      },
+      { successMessage: "Categoría eliminada" }
+    );
+  };
 
   const formik = useFormik({
     initialValues: { title: note.title, content: note.content, categories: note.categories.map(c => c.name) },
     onSubmit: values => {
+      console.log("submit", values);
       patch(
         `/notes/${id}`,
         {
@@ -47,7 +67,7 @@ const EditNote = () => {
     }),
   });
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="flex flex-1 items-center justify-center">
       <div className="bg-slate-50 min-w-[90%] md:min-w-[80%] lg:min-w-[70%] 2xl:min-w-[60%] max-w-[700px] min-h-[60%] px-8 py-12 rounded-lg shadow-xl shadow-slate-500/50">
         <div className="flex-1 flex flex-col items-center justify-start gap-8">
           <h1 className="text-2xl font-bol">!Edita tu nota!</h1>
@@ -104,6 +124,7 @@ const EditNote = () => {
                               ...prev,
                               categories: prev.categories.filter(c => c !== e.currentTarget.innerText.toLowerCase()),
                             }));
+                            removeCategory(e.currentTarget.innerText.toLowerCase());
                           }}
                           className="text-md capitalize hover:text-red-600 cursor-pointer"
                         >

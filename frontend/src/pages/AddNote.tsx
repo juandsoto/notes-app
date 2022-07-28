@@ -40,7 +40,7 @@ const AddNote = () => {
     }),
   });
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="flex flex-1 items-center justify-center">
       <div className="bg-slate-50 min-w-[90%] md:min-w-[80%] lg:min-w-[70%] 2xl:min-w-[60%] max-w-[700px] min-h-[60%] px-8 py-12 rounded-lg shadow-xl shadow-slate-500/50">
         <div className="flex-1 flex flex-col items-center justify-start gap-8">
           <h1 className="text-2xl font-bol">¡Crea tu nueva nota!</h1>
