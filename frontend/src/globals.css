@@ -23,6 +23,13 @@
     @apply p-2 outline-none border border-blue-500 rounded-md shadow-lg;
   }
 
+  select {
+    @apply p-2 outline-none rounded-md shadow-lg shadow-darkBlue;
+  }
+  option {
+    @apply border-none outline-none;
+  }
+
   button {
     @apply shadow-lg rounded-md;
   }
