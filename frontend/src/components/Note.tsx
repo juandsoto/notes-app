@@ -61,7 +61,7 @@ const Note = (props: Props) => {
           <span className="text-sm text-left">Actualizada {moment(updatedAt).fromNow()}</span>
           <div className="flex gap-2">
             {loadingPatch || loadingDelete || loadingNotes ? (
-              <DotLoader size={20} />
+              <DotLoader size={20} color="#3b82f6" />
             ) : (
               <>
                 <BsArchiveFill

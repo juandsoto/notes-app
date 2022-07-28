@@ -39,7 +39,7 @@ const Category = (props: Props) => {
           <span className="text-sm">Creada {moment(createdAt).fromNow()}</span>
           <div className="flex gap-2">
             {loadingDelete || loadingCategories ? (
-              <DotLoader size={20} />
+              <DotLoader size={20} color="#3b82f6" />
             ) : (
               <>
                 <AiFillDelete

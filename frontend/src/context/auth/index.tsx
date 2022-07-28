@@ -28,9 +28,9 @@ const AuthContext = createContext<IAuthContext>({
 } as IAuthContext);
 
 export const AuthProvider = ({ children }: Props): JSX.Element => {
-  const [user, setUser] = useLocalStorage<Auth | null>("user", initialUser);
+  const [user, setUser, { clearValue }] = useLocalStorage<Auth | null>("user", initialUser);
 
-  const logout = () => setUser(initialUser);
+  const logout = () => clearValue();
 
   return <AuthContext.Provider value={{ user: user!, setUser, logout }}>{children}</AuthContext.Provider>;
 };

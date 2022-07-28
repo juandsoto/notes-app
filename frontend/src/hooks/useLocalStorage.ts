@@ -1,6 +1,10 @@
 import React from "react";
 
-const useLocalStorage = <T>(keyName: string, initial: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
+interface Helpers {
+  clearValue: () => void;
+}
+
+const useLocalStorage = <T>(keyName: string, initial: T): [T, React.Dispatch<React.SetStateAction<T>>, Helpers] => {
   const [value, setValue] = React.useState<T>(() => {
     const storedValue = localStorage.getItem(keyName);
     try {
@@ -12,12 +16,17 @@ const useLocalStorage = <T>(keyName: string, initial: T): [T, React.Dispatch<Rea
     }
   });
 
+  const clearValue = () => {
+    localStorage.removeItem(keyName);
+    setValue(initial);
+  };
+
   React.useEffect(() => {
     const stringifiedValue = JSON.stringify(value);
     localStorage.setItem(keyName, stringifiedValue);
   }, [value]);
 
-  return [value, setValue];
+  return [value, setValue, { clearValue }];
 };
 
 export default useLocalStorage;

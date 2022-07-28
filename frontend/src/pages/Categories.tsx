@@ -31,7 +31,7 @@ const Categories = () => {
         if (response.status !== 200) {
           throw new Error(data.error);
         }
-        if (refetch.message) toast.success(refetch.message);
+        if (refetch.message.length) toast.success(refetch.message);
         setCategories(data);
         return;
       } catch (error: any) {
@@ -46,17 +46,19 @@ const Categories = () => {
   }, [refetch]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col flex-1">
       <h2 className="text-2xl uppercase font-bold text-primary mb-4 sm:mt-4 text-center sm:text-left">Tus Categorías</h2>
       <div className="">
-        {isLoading && <span className="text-md">Cargando categorías</span>}
-        {!categories.length && !isLoading && (
-          <div className="flex flex-col gap-1">
-            <span className="text-md">No tienes categorias</span>
-            <span className="text-lg text-darkBlue">Las puedes crear al momento de crear tus notas</span>
-          </div>
-        )}
-        <div className="flex justify-center sm:justify-start flex-wrap gap-6">
+        <div className="text-center text-md sm:text-left">
+          {isLoading && <span>Cargando categorías</span>}
+          {!categories.length && !isLoading && (
+            <div className="flex flex-col gap-1">
+              <span>No tienes categorias</span>
+              <span className="text-lg text-darkBlue">Las puedes crear al momento de crear tus notas</span>
+            </div>
+          )}
+        </div>
+        <div className="flex justify-center flex-wrap gap-6">
           {categories.map((category, i) => {
             return <Category key={category._id} {...category} index={i} {...{ refetchCategories }} loadingCategories={isLoading} />;
           })}

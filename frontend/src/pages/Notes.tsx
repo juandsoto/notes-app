@@ -50,7 +50,7 @@ const Notes = () => {
   }, [refetch]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <div className="flex justify-between items-center mb-4 sm:mt-4 gap-2">
         <h2 className="text-2xl uppercase font-bold text-primary text-center sm:text-left">Tus Notas</h2>
         <button>
@@ -60,9 +60,11 @@ const Notes = () => {
           </Link>
         </button>
       </div>
-      <div className="flex">
-        {isLoading && <span className="text-md flex-1">Cargando notas</span>}
-        {!notes.length && !isLoading && <span className="text-md flex-1">No tienes notas</span>}
+      <div>
+        <div className="text-center text-md sm:text-left">
+          {isLoading && <span>Cargando notas</span>}
+          {!notes.length && !isLoading && <span>No tienes notas</span>}
+        </div>
         <div className="flex justify-center flex-wrap gap-6">
           {notes.map((note, i) => {
             return <Note key={note._id} {...note} index={i} {...{ setSelectedId, refetchNotes }} loadingNotes={isLoading} />;
