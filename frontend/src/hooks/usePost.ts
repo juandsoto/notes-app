@@ -3,14 +3,14 @@ import { toast } from "react-hot-toast";
 import { SERVER_URL } from "../constants";
 
 interface Options {
-  successMessage?: string;
+  successMessage: string;
   onSuccess: () => void;
 }
 
 const usePost = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const post = async (url: string, config?: RequestInit, options?: Options) => {
+  const post = async (url: string, config: RequestInit, options: Options) => {
     setLoading(true);
     try {
       const response = await fetch(`${SERVER_URL}${url}`, {
@@ -31,9 +31,9 @@ const usePost = () => {
         throw new Error(data.error);
       }
 
-      toast.success(options?.successMessage || "Hecho");
+      if (options.successMessage.length) toast.success(options.successMessage);
 
-      if (options?.onSuccess) options.onSuccess;
+      options.onSuccess();
       return {
         data,
       };

@@ -27,13 +27,17 @@ const Note = (props: Props) => {
   const { loadingPatch, patch } = usePatch();
   const { loadingDelete, remove } = useDelete();
   const toggleArchived = async () => {
-    const data = await patch(`/notes/${_id}`, {
-      body: JSON.stringify({ archived: !archived }),
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
+    const data = await patch(
+      `/notes/${_id}`,
+      {
+        body: JSON.stringify({ archived: !archived }),
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
+      { onSuccess: () => {}, successMessage: "" }
+    );
     refetchNotes(`Nota ${archived ? "desarchivada" : "archivada"}`);
   };
 
