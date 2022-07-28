@@ -3,6 +3,7 @@ import { CategoryBody } from "./categories.schema";
 
 export const getAllCategories = async (userEmail: string) => {
   return await Category.findAll({
+    order: [["createdAt", "DESC"]],
     where: {
       userEmail,
     },

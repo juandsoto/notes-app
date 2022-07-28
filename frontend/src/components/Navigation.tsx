@@ -3,6 +3,7 @@ import App from "../App";
 import AddNote from "../pages/AddNote";
 import ArchivedNotes from "../pages/ArchivedNotes";
 import Categories from "../pages/Categories";
+import EditNote from "../pages/EditNote";
 import Login from "../pages/Login";
 import Notes from "../pages/Notes";
 import Register from "../pages/Register";
@@ -16,6 +17,7 @@ const Navigation = () => {
         <Route path="notes" element={<App />}>
           <Route index element={<Notes />} />
           <Route path="add" element={<AddNote />} />
+          <Route path="edit/:id" element={<EditNote />} />
         </Route>
         <Route path="/categories" element={<App />}>
           <Route index element={<Categories />} />

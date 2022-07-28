@@ -6,7 +6,14 @@ export const getAllNoteCategories = async (userEmail: string) => {
 };
 
 export const createNoteCategory = async (noteCategory: NoteCategoriesBody & { userEmail: string }) => {
-  return await NoteCategories.create(noteCategory);
+  return await NoteCategories.findOrCreate({
+    where: { noteId: noteCategory.noteId, categoryId: noteCategory.categoryId, userEmail: noteCategory.userEmail },
+    defaults: {
+      noteId: noteCategory.noteId,
+      categoryId: noteCategory.categoryId,
+      userEmail: noteCategory.userEmail,
+    },
+  });
 };
 
 export const deleteNoteCategory = async (_id: string, userEmail: string) => {

@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { SERVER_URL } from "../constants";
 
 interface Options {
   successMessage?: string;
+  onSuccess: () => void;
 }
 
 const usePost = () => {
@@ -32,6 +33,7 @@ const usePost = () => {
 
       toast.success(options?.successMessage || "Hecho");
 
+      if (options?.onSuccess) options.onSuccess;
       return {
         data,
       };

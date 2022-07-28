@@ -32,17 +32,17 @@ export const requireUser = (req: Request, res: Response<{}, { user: Omit<UserBod
   return next();
 };
 
-export const isAdmin = (req: Request, res: Response<string>, next: NextFunction) => {
+export const isAdmin = (req: Request, res: Response<{}>, next: NextFunction) => {
   if (res.locals.user.email === ADMIN_EMAIL) {
     res.locals.isAdmin = true;
   }
-  if (!res.locals.isAdmin) return res.status(StatusCodes.UNAUTHORIZED).send("Not authorized");
+  if (!res.locals.isAdmin) return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Not authorized" });
   return next();
 };
 
 export const isOwnerOrAdmin = (
   req: Request<{ email: string }>,
-  res: Response<string, { user: { email: string }; isAdmin: boolean; isOwner: boolean }>,
+  res: Response<{}, { user: { email: string }; isAdmin: boolean; isOwner: boolean }>,
   next: NextFunction
 ) => {
   if (res.locals.user.email === ADMIN_EMAIL) {
@@ -56,7 +56,7 @@ export const isOwnerOrAdmin = (
   console.log("admin", res.locals.isAdmin, "owner", res.locals.isOwner);
   if (res.locals.isAdmin) return next();
   if (res.locals.isOwner) return next();
-  return res.status(StatusCodes.UNAUTHORIZED).send("Not authorized");
+  return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Not authorized" });
 };
 
 export const errorHandler = (error: any, req: Request, res: Response<{}>, next: NextFunction) => {
@@ -80,7 +80,7 @@ export const errorHandler = (error: any, req: Request, res: Response<{}>, next: 
       });
     }
     default: {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
   }
 };

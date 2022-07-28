@@ -3,19 +3,25 @@ import * as Yup from "yup";
 import { BeatLoader } from "react-spinners";
 import { useState } from "react";
 import { AiFillTag } from "react-icons/ai";
-import usePost from "../hooks/usePost";
 import { useAuth } from "../context/auth/index";
-const AddNote = () => {
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import usePatch from "../hooks/usePatch";
+import { NoteSchema } from "../types";
+const EditNote = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { state } = useLocation();
+  const note = state as Pick<NoteSchema, "title" | "categories" | "content">;
   const [category, setCategory] = useState<string>("");
   const [categoryError, setCategoryError] = useState<string>("");
-  const { loading, post } = usePost();
+  const { loadingPatch, patch } = usePatch();
 
   const formik = useFormik({
-    initialValues: { title: "", content: "", categories: [] as string[] },
+    initialValues: { title: note.title, content: note.content, categories: note.categories.map(c => c.name) },
     onSubmit: values => {
-      post(
-        "/notes",
+      patch(
+        `/notes/${id}`,
         {
           body: JSON.stringify(values),
           headers: {
@@ -24,10 +30,11 @@ const AddNote = () => {
           },
         },
         {
-          successMessage: "Nota creada",
+          successMessage: "Nota actualizada",
           onSuccess: () => {
             formik.setValues(prev => ({ title: "", content: "", categories: [] }));
             setCategory("");
+            navigate(-1);
           },
         }
       );
@@ -43,7 +50,7 @@ const AddNote = () => {
     <div className="w-full h-full flex items-center justify-center">
       <div className="bg-slate-50 min-w-[90%] md:min-w-[80%] lg:min-w-[70%] 2xl:min-w-[60%] max-w-[700px] min-h-[60%] px-8 py-12 rounded-lg shadow-xl shadow-slate-500/50">
         <div className="flex-1 flex flex-col items-center justify-start gap-8">
-          <h1 className="text-2xl font-bol">¡Crea tu nueva nota!</h1>
+          <h1 className="text-2xl font-bol">!Edita tu nota!</h1>
           <form className="flex flex-col gap-4 min-w-[80%]" onSubmit={formik.handleSubmit}>
             <div className="flex flex-col gap-1">
               <label htmlFor="title">Titulo</label>
@@ -111,9 +118,9 @@ const AddNote = () => {
             <button
               className="text-lg mt-2 border border-blue-500 bg-blue-500 py-2 px-4 hover:bg-opacity-90 transition-colors"
               type="submit"
-              disabled={loading}
+              disabled={loadingPatch}
             >
-              {loading ? <BeatLoader size={10} color="#164ca3" /> : "Crear"}
+              {loadingPatch ? <BeatLoader size={10} color="#164ca3" /> : "Actualizar"}
             </button>
           </form>
         </div>
@@ -122,4 +129,4 @@ const AddNote = () => {
   );
 };
 
-export default AddNote;
+export default EditNote;

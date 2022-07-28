@@ -12,10 +12,10 @@ export const getAllUsersHandler = async (req: Request, res: Response, next: Next
   }
 };
 
-export const deleteUserHandler = async (req: Request<DeleteUserParams, {}, {}, {}>, res: Response<string>, next: NextFunction) => {
+export const deleteUserHandler = async (req: Request<DeleteUserParams, {}, {}, {}>, res: Response<{}>, next: NextFunction) => {
   try {
     await deleteUser(req.params.email);
-    return res.status(StatusCodes.OK).send("User deleted successfully");
+    return res.status(StatusCodes.OK).json({ error: "User deleted" });
   } catch (error) {
     return next(error);
   }

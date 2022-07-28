@@ -11,6 +11,7 @@ import usePatch from "../hooks/usePatch";
 import { useAuth } from "../context/auth/index";
 import { DotLoader } from "react-spinners";
 import useDelete from "../hooks/useDelete";
+import { Link, useNavigate } from "react-router-dom";
 moment.locale("es");
 interface Props extends NoteSchema {
   index: number;
@@ -20,8 +21,9 @@ interface Props extends NoteSchema {
 }
 
 const Note = (props: Props) => {
-  const { _id, title, archived, updatedAt, index, setSelectedId, refetchNotes, loadingNotes } = props;
+  const { _id, title, categories, content, archived, updatedAt, index, setSelectedId, refetchNotes, loadingNotes } = props;
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { loadingPatch, patch } = usePatch();
   const { loadingDelete, remove } = useDelete();
   const toggleArchived = async () => {
@@ -68,12 +70,31 @@ const Note = (props: Props) => {
                     toggleArchived();
                   }}
                   size={20}
+                  className="cursor-pointer"
                   color="green"
                 />
-                <FaEdit size={20} color="#3b82f6" />
+                {/* <Link
+                  to={`/notes/edit/${_id}`}
+                  state={{ _id, title, categories, content }}
+                  onClick={e => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <FaEdit size={20} color="#3b82f6" />
+                </Link> */}
+                <FaEdit
+                  onClick={e => {
+                    e.stopPropagation();
+                    navigate(`/notes/edit/${_id}`, { state: { title, categories, content } });
+                  }}
+                  className="cursor-pointer"
+                  size={20}
+                  color="#3b82f6"
+                />
                 <AiFillDelete
                   size={20}
                   color="crimson"
+                  className="cursor-pointer"
                   onClick={e => {
                     e.stopPropagation();
                     removeNote();

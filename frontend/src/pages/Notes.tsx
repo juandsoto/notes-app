@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 
 const Notes = () => {
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refetch, setRefetch] = useState<{ message: string }>({ message: "" });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [notes, setNotes] = useState<NoteSchema[]>([]);
@@ -61,15 +61,13 @@ const Notes = () => {
         </button>
       </div>
       <div className="flex">
-        {!notes.length && !isLoading ? (
-          <span className="text-md">No tienes notas</span>
-        ) : (
-          <div className="flex justify-center flex-wrap gap-6">
-            {notes.map((note, i) => {
-              return <Note key={note._id} {...note} index={i} {...{ setSelectedId, refetchNotes }} loadingNotes={isLoading} />;
-            })}
-          </div>
-        )}
+        {isLoading && <span className="text-md">Cargando notas</span>}
+        {!notes.length && !isLoading && <span className="text-md">No tienes notas</span>}
+        <div className="flex justify-center flex-wrap gap-6">
+          {notes.map((note, i) => {
+            return <Note key={note._id} {...note} index={i} {...{ setSelectedId, refetchNotes }} loadingNotes={isLoading} />;
+          })}
+        </div>
       </div>
       <AnimatePresence>
         {selectedId && (

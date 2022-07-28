@@ -4,7 +4,7 @@ export const categorySchema = {
   body: object({
     name: string({
       required_error: "name is required",
-    }).min(3, "name must be at least 3 characters"),
+    }).min(2, "name must be at least 2 characters"),
   }),
   deleteParams: object({
     id: string({

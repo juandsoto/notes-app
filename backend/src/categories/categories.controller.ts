@@ -25,11 +25,13 @@ export const createCategoryHandler = async (req: Request<{}, {}, CategoryBody>, 
   }
 };
 
-export const deleteCategoryHandler = async (req: Request<CategoryDeleteParams>, res: Response<string, { user: { email: string } }>, next: NextFunction) => {
+export const deleteCategoryHandler = async (req: Request<CategoryDeleteParams>, res: Response<{}, { user: { email: string } }>, next: NextFunction) => {
   try {
     await deleteCategory(req.params.id, res.locals.user.email);
     await deleteNoteCategoryByCategoryID(req.params.id, res.locals.user.email);
-    return res.status(StatusCodes.OK).send("Category deleted");
+    return res.status(StatusCodes.OK).json({
+      message: "Category deleted",
+    });
   } catch (error) {
     return next(error);
   }

@@ -9,6 +9,11 @@ export const notesSchema = {
     archived: boolean().nullish(),
     categories: array(string()).nullish(),
   }),
+  getOneParams: object({
+    id: string({
+      required_error: "_id param is required",
+    }),
+  }),
   updateParams: object({
     id: string({
       required_error: "_id param is required",
@@ -27,4 +32,5 @@ export const notesSchema = {
 export type NotesBody = TypeOf<typeof notesSchema.body>;
 export type DeleteNoteParams = TypeOf<typeof notesSchema.deleteParams>;
 export type UpdateNoteParams = TypeOf<typeof notesSchema.updateParams>;
+export type GetOneParams = TypeOf<typeof notesSchema.getOneParams>;
 export type FindAllNotesQuery = TypeOf<typeof notesSchema.findAllQuery>;

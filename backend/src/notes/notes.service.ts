@@ -4,7 +4,12 @@ import Note from "./notes.model";
 import { NotesBody } from "./notes.schema";
 
 export const getAllNotes = async (userEmail: string, category: string) => {
+  const options: Record<string, any> = {};
   const query = category ? { [Op.eq]: category } : { [Op.not]: null };
+
+  if (!category) {
+    options.required = false;
+  }
 
   const notes = await Note.findAll({
     where: { userEmail, archived: false },
@@ -16,6 +21,7 @@ export const getAllNotes = async (userEmail: string, category: string) => {
       where: {
         name: query,
       },
+      ...options,
     },
   });
 

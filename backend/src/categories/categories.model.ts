@@ -14,7 +14,7 @@ const Category = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        min: 3,
+        min: 2,
       },
     },
     userEmail: {

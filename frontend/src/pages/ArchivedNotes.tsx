@@ -9,7 +9,7 @@ import NoteDetail from "../components/NoteDetail";
 
 const ArchivedNotes = () => {
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refetch, setRefetch] = useState<{ message: string }>({ message: "" });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [notes, setNotes] = useState<NoteSchema[]>([]);
@@ -51,15 +51,13 @@ const ArchivedNotes = () => {
     <div className="flex flex-col">
       <h2 className="text-2xl uppercase my-4 font-bold text-primary">Tus Notas</h2>
       <div className="flex flex-wrap gap-6">
-        {!notes.length && !isLoading ? (
-          <span className="text-md">No tienes notas archivadas</span>
-        ) : (
-          <div className="flex justify-center flex-wrap gap-6">
-            {notes.map((note, i) => {
-              return <Note key={note._id} {...note} index={i} {...{ setSelectedId, refetchNotes }} loadingNotes={isLoading} />;
-            })}
-          </div>
-        )}
+        {isLoading && <span className="text-md">Cargando notas archivadas</span>}
+        {!notes.length && !isLoading && <span className="text-md">No tienes notas archivadas</span>}
+        <div className="flex justify-center flex-wrap gap-6">
+          {notes.map((note, i) => {
+            return <Note key={note._id} {...note} index={i} {...{ setSelectedId, refetchNotes }} loadingNotes={isLoading} />;
+          })}
+        </div>
       </div>
       <AnimatePresence>
         {selectedId && (

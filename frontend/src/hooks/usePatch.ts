@@ -1,10 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { SERVER_URL } from "../constants";
+interface Options {
+  successMessage?: string;
+  onSuccess?: () => void;
+}
+
 const usePatch = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const patch = async (url: string, config?: RequestInit) => {
+  const patch = async (url: string, config?: RequestInit, options?: Options) => {
     setLoading(true);
     try {
       const response = await fetch(`${SERVER_URL}${url}`, {
@@ -23,7 +28,8 @@ const usePatch = () => {
       if (response.status !== 200) {
         throw new Error(data.error);
       }
-
+      toast.success(options?.successMessage || "Hecho");
+      if (options?.onSuccess) options.onSuccess();
       return {
         data,
       };

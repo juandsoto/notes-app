@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { processRequestBody, processRequestParams } from "zod-express-middleware";
 import { notesSchema } from "./notes.schema";
-import { createNoteHandler, deleteNoteHandler, getAllNotesHandler, getArchivedNotesHandler, updateNoteHandler } from "./notes.controller";
+import { createNoteHandler, deleteNoteHandler, getAllNotesHandler, getArchivedNotesHandler, getNoteByIdHandler, updateNoteHandler } from "./notes.controller";
 const router = Router();
 
 router.get("/", getAllNotesHandler);
 
 router.get("/archived", getArchivedNotesHandler);
+
+router.get("/:id", getNoteByIdHandler);
 
 router.post("/", processRequestBody(notesSchema.body), createNoteHandler);
 
