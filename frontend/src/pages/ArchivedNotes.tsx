@@ -4,12 +4,10 @@ import { NoteSchema } from "../types";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Note from "../components/Note";
-import { FcPlus } from "react-icons/fc";
 import { AnimatePresence } from "framer-motion";
 import NoteDetail from "../components/NoteDetail";
-import { Link } from "react-router-dom";
 
-const Notes = () => {
+const ArchivedNotes = () => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refetch, setRefetch] = useState<{ message: string }>({ message: "" });
@@ -23,7 +21,7 @@ const Notes = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch(`${SERVER_URL}/notes`, {
+        const response = await fetch(`${SERVER_URL}/notes/archived`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -51,18 +49,10 @@ const Notes = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl uppercase my-4 font-bold text-primary">Tus Notas</h2>
-        <button>
-          <Link to={`/notes/add`} className="flex gap-1 items-center px-2 py-1 rounded-md">
-            <span className="text-green-700 text-md font-semibold">Agregar</span>
-            <FcPlus size={30} />
-          </Link>
-        </button>
-      </div>
-      <div className="flex">
+      <h2 className="text-2xl uppercase my-4 font-bold text-primary">Tus Notas</h2>
+      <div className="flex flex-wrap gap-6">
         {!notes.length && !isLoading ? (
-          <span className="text-md">No tienes notas</span>
+          <span className="text-md">No tienes notas archivadas</span>
         ) : (
           <div className="flex justify-center flex-wrap gap-6">
             {notes.map((note, i) => {
@@ -82,4 +72,4 @@ const Notes = () => {
   );
 };
 
-export default Notes;
+export default ArchivedNotes;

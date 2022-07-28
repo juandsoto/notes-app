@@ -19,7 +19,17 @@
     @apply p-2 outline-none border border-blue-500 rounded-md shadow-lg;
   }
 
+  textarea {
+    @apply p-2 outline-none border border-blue-500 rounded-md shadow-lg;
+  }
+
   button {
     @apply shadow-lg rounded-md;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .xs-hidden {
+    display: none;
   }
 }
