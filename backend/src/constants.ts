@@ -1,4 +1,4 @@
-export const CORS_ORIGIN = (process.env.CORS_ORIGIN || "http://localhost:3000") as string;
+export const CORS_ORIGIN = process.env.NODE_ENV === "production" ? process.env.CORS_ORIGIN : ("http://localhost:3000" as string);
 export const PORT = (process.env.PORT || "4000") as string;
 export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY as string;
 
