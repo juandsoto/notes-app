@@ -1,13 +1,12 @@
 {
-	"name": "backend",
+	"name": "notes-app-postgres-jdsc",
 	"version": "1.0.0",
 	"description": "",
 	"main": "main.ts",
 	"scripts": {
-		"build": "rimraf dist && tsc",
-		"start": "ts-node src/main.ts",
-		"dev": "tsnd --respawn --transpile-only src/main.ts",
-		"deploy": "vercel deploy --prod"
+		"postinstall": "tsc",
+		"start": "node dist/main.js",
+		"dev": "tsnd --respawn --transpile-only src/main.ts"
 	},
 	"author": "juandsoto",
 	"license": "ISC",
