@@ -14,6 +14,10 @@ Aplicación de notas creada como reto puesto de FullStack developer.
 
 [Notes App](https://notes-app-juandsoto.vercel.app/)
 
+## ACTUALIZACIÓN
+
+Backend desplegado y aplición funcionando correctamente en [Notes App](https://notes-app-juandsoto.vercel.app/)
+
 > Desafortunadamente no conseguí desplegar el servidor, por lo cual el frontend desplegado muestra solo la UI, sin embargo, tanto el backend como el frontend funcionan localmente, y para esto se recomienda ejecutar los scripts mencionados anteriormente.
 
 _En caso de no funcionar los scripts, asegurarse de darle permisos con el comando `chmod + nombre-del-script.sh` y posteriormente ejecutar el ambos scripts asi: `.\nombre-del-script.sh`_
