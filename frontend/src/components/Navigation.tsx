@@ -20,12 +20,28 @@ const Protected = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
   return <>{children}</>;
 };
 
+const NoAuth = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
+  const { user } = useAuth();
+
+  if (user.token.length) {
+    return <Navigate to="/notes" replace={true} />;
+  }
+
+  return <>{children}</>;
+};
+
 const Navigation = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Welcome />} />
-
+        <Route
+          path="/"
+          element={
+            <NoAuth>
+              <Welcome />
+            </NoAuth>
+          }
+        />
         <Route
           path="notes"
           element={
@@ -58,8 +74,22 @@ const Navigation = () => {
         >
           <Route index element={<ArchivedNotes />} />
         </Route>
-        <Route path="/signup" element={<Register />} />
-        <Route path="/signin" element={<Login />} />
+        <Route
+          path="/signup"
+          element={
+            <NoAuth>
+              <Register />
+            </NoAuth>
+          }
+        />
+        <Route
+          path="/signin"
+          element={
+            <NoAuth>
+              <Login />
+            </NoAuth>
+          }
+        />
         <Route path="*" element={<div>not found</div>} />
       </Routes>
     </BrowserRouter>
