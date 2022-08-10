@@ -7,7 +7,6 @@ const links = [
   { to: "/notes", title: "Notas" },
   { to: "/categories", title: "Categorías" },
   { to: "/archived", title: "Archivo" },
-  { to: "/", title: "Inicio" },
 ];
 
 const Sidebar = () => {
