@@ -12,7 +12,7 @@ const links = [
 const Sidebar = () => {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(false);
   const linkClassName = "bg-primary scale-110";
   return (
     <div className="relative flex sm:h-full sm:flex-col items-center justify-between sm:justify-start p-2 sm:gap-y-10 bg-slate-50 rounded-xl">
