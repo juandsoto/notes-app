@@ -7,6 +7,7 @@ const links = [
   { to: "/notes", title: "Notas" },
   { to: "/categories", title: "Categorías" },
   { to: "/archived", title: "Archivo" },
+  { to: "/notes/add", title: "Agregar Nota" },
 ];
 
 const Sidebar = () => {
@@ -17,13 +18,13 @@ const Sidebar = () => {
   return (
     <div className="relative flex sm:h-full sm:flex-col items-center justify-between sm:justify-start p-2 sm:gap-y-10 bg-slate-50 rounded-xl">
       <div className="flex gap-2 sm:gap-4 items-center">
-        <div className="w-[40%] max-w-[100px]">
+        <div className="w-[20%] sm:w-[40%] max-w-[100px]">
           <img className="h-full w-full" src="https://cdn.worldvectorlogo.com/logos/notek.svg" alt="logo" />
         </div>
         <h1 className="hidden sm:block text-xl font-bold">Notek</h1>
-        <h2 className="sm:hidden text-md font-bold uppercase py-2 px-3 rounded-lg text-darkBlue">{user?.username}</h2>
+        <h2 className="sm:hidden text-md text-center font-bold uppercase py-2 px-3 rounded-lg text-darkBlue">{user?.username}</h2>
       </div>
-      <div className="hidden sm:block text-sm sm:text-lg uppercase bg-darkBlue py-2 px-3 rounded-lg text-slate-50">{user?.username}</div>
+      <div className="hidden sm:flex text-md md:text-lg uppercase bg-darkBlue py-2 px-3 rounded-lg text-slate-50">{user?.username}</div>
       {!open ? (
         <GiHamburgerMenu onClick={() => setOpen(true)} className="sm:hidden mr-2 cursor-pointer" size={30} color="#3b82f6" />
       ) : (
@@ -39,12 +40,12 @@ const Sidebar = () => {
         </ul>
       </nav>
       <button className="hidden sm:block text-sm sm:text-lg sm:mb-6 font-bold text-slate-50" onClick={logout}>
-        <Link to="/" replace={true} className="bg-cyan-700 py-2 px-4 rounded-xl hover: bg-cyan-700/90 uppercase">
+        <Link to="/" replace={true} className="bg-red-600 py-2 px-4 rounded-xl hover:bg-red-600/90 uppercase">
           Salir
         </Link>
       </button>
       {open && (
-        <div className="sm:hidden text-sm flex flex-col gap-4 py-4 px-1 absolute right-0 bottom-[80%] bg-slate-50 rounded-lg">
+        <div className="sm:hidden text-sm flex flex-col gap-4 py-4 px-2 absolute right-0 bottom-[80%] bg-slate-50 rounded-lg">
           <nav className="justify-center">
             <ul className="flex flex-col justify-center sm:justify-start items-center gap-2">
               {links.map(({ to, title }) => (
@@ -58,7 +59,7 @@ const Sidebar = () => {
             onClick={logout}
             to="/"
             replace={true}
-            className="text-center mb-4 font-bold text-slate-50 bg-cyan-700 py-2 px-4 rounded-xl hover: bg-cyan-700/90 uppercase"
+            className="text-center mb-4 font-bold text-slate-50 bg-red-600 py-2 px-4 rounded-xl hover: bg-red-600/90 uppercase"
           >
             Salir
           </Link>
