@@ -56,7 +56,7 @@ const Register = () => {
       style={{ backgroundImage: `url(${Wave})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "bottom" }}
     >
       <div className="relative flex bg-slate-50 min-w-[90%] md:min-w-[70%] lg:min-w-[50%] 2xl:min-w-[40%] min-h-[60%] px-8 py-12 rounded-lg shadow-xl shadow-slate-500/50">
-        <div className="absolute top-[-20px] left-[50%] translate-y-[-50%] translate-x-[-50%]  max-w-[100px]">
+        <div className="absolute top-[-20px] left-[50%] translate-y-[-50%] translate-x-[-50%] max-w-[100px]">
           <img className="h-full w-full" src="https://cdn.worldvectorlogo.com/logos/notek.svg" alt="logo" />
         </div>
         <div className="flex-1 flex flex-col items-center justify-start gap-8">

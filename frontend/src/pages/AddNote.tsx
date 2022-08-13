@@ -1,4 +1,4 @@
-import { FieldArray, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { BeatLoader } from "react-spinners";
 import { useState } from "react";
@@ -41,10 +41,10 @@ const AddNote = () => {
   });
   return (
     <div className="flex flex-1 items-center justify-center">
-      <div className="bg-slate-50 min-w-[90%] md:min-w-[80%] lg:min-w-[70%] 2xl:min-w-[60%] max-w-[700px] min-h-[60%] px-8 py-12 rounded-lg shadow-xl shadow-slate-500/50">
+      <div className="bg-slate-50 min-w-[90%] md:min-w-[80%] lg:min-w-[70%] 2xl:min-w-[60%] max-w-[700px] min-h-[60%] px-4 py-6 sm:px-8 sm:py-12 rounded-lg shadow-xl shadow-slate-500/50">
         <div className="flex-1 flex flex-col items-center justify-start gap-8">
-          <h1 className="text-2xl font-bol">¡Crea tu nueva nota!</h1>
-          <form className="flex flex-col gap-4 min-w-[80%]" onSubmit={formik.handleSubmit}>
+          <h1 className="text-2xl">¡Crea tu nueva nota!</h1>
+          <form className="flex flex-col gap-4 min-w-[100%] sm:min-w-[80%]" onSubmit={formik.handleSubmit}>
             <div className="flex flex-col gap-1">
               <label htmlFor="title">Titulo</label>
               <input type="text" name="title" placeholder="Mi nota" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.title} />

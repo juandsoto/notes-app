@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { AiFillCloseCircle, AiFillTag } from "react-icons/ai";
 import { NoteSchema } from "../types";
 import moment from "moment";
+import { FirstLetterToUppercase } from "../utils";
 
 interface Props {
   selectedId: string;
@@ -19,7 +20,7 @@ const NoteDetail = (props: Props) => {
     >
       <div className="flex flex-col gap-4 flex-1">
         <div className="flex justify-between items-center py-2 border-b border-darkBlue/20">
-          <motion.h1 className="text-xl font-bold text-primary capitalize">{note.title}</motion.h1>
+          <motion.h1 className="text-xl font-bold text-primary">{FirstLetterToUppercase(note.title)}</motion.h1>
           <AiFillCloseCircle className="cursor-pointer" onClick={() => setSelectedId(null)} size={30} color="#164ca3" />
         </div>
         <motion.p>{note.content || "Sin descripción"}</motion.p>

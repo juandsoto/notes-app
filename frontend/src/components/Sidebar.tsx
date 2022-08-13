@@ -24,16 +24,16 @@ const Sidebar = () => {
         <h1 className="hidden sm:block text-xl font-bold">Notek</h1>
         <h2 className="sm:hidden text-md text-center font-bold uppercase py-2 px-3 rounded-lg text-darkBlue">{user?.username}</h2>
       </div>
-      <div className="hidden sm:flex text-md md:text-lg uppercase bg-darkBlue py-2 px-3 rounded-lg text-slate-50">{user?.username}</div>
+      <div className="hidden text-center sm:flex text-md md:text-lg uppercase bg-darkBlue py-2 px-3 rounded-lg text-slate-50">{user?.username}</div>
       {!open ? (
         <GiHamburgerMenu onClick={() => setOpen(true)} className="sm:hidden mr-2 cursor-pointer" size={30} color="#3b82f6" />
       ) : (
         <CgClose onClick={() => setOpen(false)} className="sm:hidden mr-2 cursor-pointer" size={30} color="#3b82f6" />
       )}
       <nav className="hidden flex-1 sm:flex justify-center">
-        <ul className="flex flex-col sm:flex-col justify-center  sm:justify-start items-center gap-4">
+        <ul className="flex flex-col sm:flex-col justify-center text-center sm:justify-start items-center gap-4">
           {links.map(({ to, title }) => (
-            <li key={title} className={["py-1 px-2 rounded-xl hover:bg-primary transition-all", pathname === to ? linkClassName : ""].join(" ")}>
+            <li key={title} className={["py-1 px-2 rounded-xl hover:scale-95 transition-all", pathname === to ? linkClassName : ""].join(" ")}>
               <Link to={to}>{title}</Link>
             </li>
           ))}
@@ -49,7 +49,7 @@ const Sidebar = () => {
           <nav className="justify-center">
             <ul className="flex flex-col justify-center sm:justify-start items-center gap-2">
               {links.map(({ to, title }) => (
-                <li key={title} className={["py-1 px-2 rounded-xl hover:bg-primary transition-all", pathname === to ? linkClassName : ""].join(" ")}>
+                <li key={title} className={["py-1 px-2 rounded-xl hover:underline transition-all", pathname === to ? linkClassName : ""].join(" ")}>
                   <Link to={to}>{title}</Link>
                 </li>
               ))}

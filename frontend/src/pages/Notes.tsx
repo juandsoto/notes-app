@@ -20,10 +20,20 @@ const Notes = () => {
   const [notes, setNotes] = useState<NoteSchema[]>([]);
 
   const filteredNotes: NoteSchema[] = useMemo(
-    () => notes?.filter(n => n.categories.some(c => c.name === category || category === "")).filter(note => note.title.toLowerCase().startsWith(search)),
+    () => notes?.filter(n => n.categories.some(c => c.name === category || category === "")).filter(note => note.title.toLowerCase().includes(search)),
     [notes, search, category]
   );
-  const categories: string[] = useMemo(() => [...new Set(notes?.map(n => n.categories.map(c => c.name)).flat())], [notes]);
+  const categories: string[] = useMemo(
+    () => [
+      ...new Set(
+        notes
+          ?.map(n => n.categories.map(c => c.name))
+          .flat()
+          .sort((a, b) => 0 - (a > b ? -1 : 1))
+      ),
+    ],
+    [notes]
+  );
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value.toLowerCase());
 

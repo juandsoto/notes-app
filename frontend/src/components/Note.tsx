@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { NoteSchema } from "../types";
 import { BsArchiveFill } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
@@ -11,7 +11,8 @@ import usePatch from "../hooks/usePatch";
 import { useAuth } from "../context/auth/index";
 import { DotLoader } from "react-spinners";
 import useDelete from "../hooks/useDelete";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { FirstLetterToUppercase } from "../utils";
 moment.locale("es");
 interface Props extends NoteSchema {
   index: number;
@@ -56,11 +57,11 @@ const Note = (props: Props) => {
     <motion.button
       disabled={loadingPatch || loadingDelete || loadingNotes}
       layoutId={_id}
-      className="flex flex-1 shadow-lg shadow-slate-500/50 p-3 rounded-md min-w-[300px] max-w-[500px] bg-slate-50"
+      className="flex flex-1 shadow-lg shadow-slate-500/50 p-3 rounded-md min-w-[270px] sm:min-w-[300px] max-w-[500px] bg-slate-50"
       onClick={() => setSelectedId(_id)}
     >
       <motion.div className="flex flex-col w-full">
-        <span className="text-lg capitalize text-left">{title}</span>
+        <span className="text-lg text-left">{FirstLetterToUppercase(title)}</span>
         <div className="flex justify-between items-center gap-4">
           <span className="text-sm text-left">Actualizada {moment(updatedAt).fromNow()}</span>
           <div className="flex gap-2">
