@@ -7,6 +7,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { CategorySchema } from "../types";
 import useDelete from "../hooks/useDelete";
 import toast from "react-hot-toast";
+import { Tooltip } from "react-tippy";
 
 moment.locale("es");
 interface Props extends CategorySchema {
@@ -28,7 +29,8 @@ const Category = (props: Props) => {
             {isLoadingRemove || loadingCategories ? (
               <DotLoader size={20} color="#3b82f6" />
             ) : (
-              <>
+              /* @ts-ignore */
+              <Tooltip title="Eliminar" position="right-start">
                 <AiFillDelete
                   className="cursor-pointer"
                   size={20}
@@ -44,7 +46,7 @@ const Category = (props: Props) => {
                     );
                   }}
                 />
-              </>
+              </Tooltip>
             )}
           </div>
         </div>

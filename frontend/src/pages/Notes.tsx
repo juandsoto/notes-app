@@ -3,6 +3,7 @@ import { debounce } from "lodash";
 import { FcPlus } from "react-icons/fc";
 import { AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import { PulseLoader } from "react-spinners";
 import { NoteSchema } from "../types";
 import Note from "../components/Note";
 import NoteDetail from "../components/NoteDetail";
@@ -62,20 +63,30 @@ const Notes = () => {
           ))}
         </select>
       </div>
-      <div>
+      {isLoading && (
+        <div className="flex gap-2 items-center text-sm">
+          <span>Cargando</span>
+          <PulseLoader className="pt-1" color="#3b82f6" size={8} />
+        </div>
+      )}
+      {!filteredNotes.length && !isLoading && (
         <div className="text-center text-md sm:text-left">
-          {isLoading && <span>Cargando notas</span>}
-          {!filteredNotes.length && !isLoading && <span>No tienes notas</span>}
+          <span>No tienes notas</span>
+          <div className="flex gap-2 items-center">
+            <Link to="/notes/add">
+              <span className="text-lg text-darkBlue underline">¡Comienza creando una!</span>
+            </Link>
+          </div>
         </div>
-        <div className="flex justify-center flex-wrap gap-6">
-          {filteredNotes.map((note, i) => {
-            return <Note key={note._id} {...note} index={i} {...{ setSelectedId }} loadingNotes={isLoading} />;
-          })}
-        </div>
+      )}
+      <div className="flex justify-center flex-wrap gap-6">
+        {filteredNotes.map((note, i) => {
+          return <Note key={note._id} {...note} index={i} {...{ setSelectedId }} loadingNotes={isLoading} />;
+        })}
       </div>
       <AnimatePresence>
         {selectedId && (
-          <div className="flex items-center justify-center fixed top-0 bottom-0 left-0 right-0">
+          <div className="flex items-center justify-center fixed top-0 bottom-0 left-0 sm:left-[20%] right-0">
             <NoteDetail {...{ selectedId, setSelectedId }} note={notes.find(note => note._id === selectedId) || ({} as NoteSchema)} />
           </div>
         )}

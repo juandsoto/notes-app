@@ -5,6 +5,8 @@ import Note from "../components/Note";
 import NoteDetail from "../components/NoteDetail";
 import { debounce } from "lodash";
 import useFetch from "../hooks/useFetch";
+import { PulseLoader } from "react-spinners";
+import { Link } from "react-router-dom";
 
 const ArchivedNotes = () => {
   const [search, setSearch] = useState<string>("");
@@ -31,41 +33,54 @@ const ArchivedNotes = () => {
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value.toLowerCase());
 
   return (
-    <div className="flex flex-col flex-1">
-      <h2 className="text-2xl uppercase font-bold text-primary mb-4 sm:mt-4 text-center sm:text-left">Tus Notas Archivadas</h2>
-      <div className="flex items-center justify-end sm:justify-end mb-4 gap-2 flex-wrap">
-        <input
-          className="border-none bg-transparent border-l-2 border-darkBlue"
-          type="text"
-          onChange={debounce(onChangeSearch, 300)}
-          placeholder="Filtra por nombre"
-          aria-label="controlled"
-        />
-        <select className="bg-primary text-white cursor-pointer" onChange={e => setCategory(e.target.value)} name="category" id="category">
-          <option className=" cursor-pointer" value="">
-            Todas
-          </option>
-          {categories.map((c, i) => (
-            <option className="capitalize cursor-pointer" key={c} value={c}>
-              {c}
+    <div className="flex flex-col w-full">
+      <div className="flex justify-between items-center mb-4 sm:mt-4 gap-2 flex-wrap">
+        <h2 className="text-2xl uppercase font-bold text-primary text-left">Tus Notas Archivadas</h2>
+        <div className="flex items-center justify-end ml-auto gap-2 flex-wrap">
+          <input
+            className="border-none bg-transparent border-l-2 border-darkBlue"
+            type="text"
+            onChange={debounce(onChangeSearch, 300)}
+            placeholder="Filtra por nombre"
+            aria-label="controlled"
+          />
+          <select className="bg-primary text-white cursor-pointer" onChange={e => setCategory(e.target.value)} name="category" id="category">
+            <option className=" cursor-pointer" value="">
+              Todas
             </option>
-          ))}
-        </select>
+            {categories.map((c, i) => (
+              <option className="capitalize cursor-pointer" key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
-      <div className="">
+
+      {isLoading && (
+        <div className="flex gap-2 items-center text-sm">
+          <span>Cargando</span>
+          <PulseLoader className="pt-1" color="#3b82f6" size={8} />
+        </div>
+      )}
+      {!filteredNotes.length && !isLoading && (
         <div className="text-center text-md sm:text-left">
-          {isLoading && <span>Cargando notas archivadas</span>}
-          {!filteredNotes.length && !isLoading && <span>No tienes notas archivadas</span>}
+          <span>No tienes notas archivadas</span>
+          <div className="flex gap-2 items-center">
+            <Link to="/notes">
+              <span className="text-lg text-darkBlue underline">¡Archiva una!</span>
+            </Link>
+          </div>
         </div>
-        <div className="flex justify-center flex-wrap gap-6">
-          {filteredNotes.map((note, i) => {
-            return <Note key={note._id} {...note} index={i} {...{ setSelectedId }} loadingNotes={isLoading} />;
-          })}
-        </div>
+      )}
+      <div className="flex justify-center flex-wrap gap-6">
+        {filteredNotes.map((note, i) => {
+          return <Note key={note._id} {...note} index={i} {...{ setSelectedId }} loadingNotes={isLoading} />;
+        })}
       </div>
       <AnimatePresence>
         {selectedId && (
-          <div className="flex items-center justify-center absolute top-0 bottom-0 left-0 right-0">
+          <div className="flex items-center justify-center fixed top-0 bottom-0 left-0 sm:left-[20%] right-0">
             <NoteDetail {...{ selectedId, setSelectedId }} note={notes.find(note => note._id === selectedId) || ({} as NoteSchema)} />
           </div>
         )}

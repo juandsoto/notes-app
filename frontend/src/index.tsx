@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import Navigation from "./components/Navigation";
 import { AuthProvider } from "./context/auth";
 import "./globals.css";
+import "react-tippy/dist/tippy.css";
 
 const queryClient = new QueryClient();
 

@@ -13,6 +13,7 @@ import { NoteSchema } from "../types";
 import usePatch from "../hooks/usePatch";
 import useDelete from "../hooks/useDelete";
 import { FirstLetterToUppercase } from "../utils";
+import { Tooltip } from "react-tippy";
 
 moment.locale("es");
 interface Props extends NoteSchema {
@@ -43,47 +44,56 @@ const Note = (props: Props) => {
               <DotLoader size={20} color="#3b82f6" />
             ) : (
               <>
-                <BsArchiveFill
-                  onClick={e => {
-                    e.stopPropagation();
-                    toggleArchived(
-                      { archived: !archived },
-                      {
-                        onSuccess: () => {
-                          toast.success(`Nota ${archived ? "desarchivada" : "archivada"}`);
-                        },
-                      }
-                    );
-                  }}
-                  size={20}
-                  className="cursor-pointer"
-                  color="green"
-                />
-                <FaEdit
-                  onClick={e => {
-                    e.stopPropagation();
-                    navigate(`/notes/edit/${_id}`, { state: { title, categories, content } });
-                  }}
-                  className="cursor-pointer ml-1"
-                  size={20}
-                  color="#3b82f6"
-                />
-                <AiFillDelete
-                  size={20}
-                  color="crimson"
-                  className="cursor-pointer"
-                  onClick={e => {
-                    e.stopPropagation();
-                    remove(
-                      { a: 1 },
-                      {
-                        onSuccess: () => {
-                          toast.success(`Nota eliminada`);
-                        },
-                      }
-                    );
-                  }}
-                />
+                {/* @ts-ignore */}
+                <Tooltip title={archived ? "Desarchivar" : "Archivar"} position="right-start">
+                  <BsArchiveFill
+                    onClick={e => {
+                      e.stopPropagation();
+                      toggleArchived(
+                        { archived: !archived },
+                        {
+                          onSuccess: () => {
+                            toast.success(`Nota ${archived ? "desarchivada" : "archivada"}`);
+                          },
+                        }
+                      );
+                    }}
+                    size={20}
+                    className="cursor-pointer"
+                    color="green"
+                  />
+                </Tooltip>
+                {/* @ts-ignore */}
+                <Tooltip title="Editar" position="right-start">
+                  <FaEdit
+                    onClick={e => {
+                      e.stopPropagation();
+                      navigate(`/notes/edit/${_id}`, { state: { title, categories, content } });
+                    }}
+                    className="cursor-pointer ml-1"
+                    size={20}
+                    color="#3b82f6"
+                  />
+                </Tooltip>
+                {/* @ts-ignore */}
+                <Tooltip title="Eliminar" position="right-start">
+                  <AiFillDelete
+                    size={20}
+                    color="crimson"
+                    className="cursor-pointer"
+                    onClick={e => {
+                      e.stopPropagation();
+                      remove(
+                        { a: 1 },
+                        {
+                          onSuccess: () => {
+                            toast.success(`Nota eliminada`);
+                          },
+                        }
+                      );
+                    }}
+                  />
+                </Tooltip>
               </>
             )}
           </div>

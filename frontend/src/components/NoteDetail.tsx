@@ -15,7 +15,7 @@ const NoteDetail = (props: Props) => {
   const { selectedId, setSelectedId, note } = props;
   return (
     <motion.div
-      className="flex flex-col gap-2 min-w-[90%] sm:min-w-[70%] lg:min-w-[60%] 2xl:min-w-[40%] max-w-[90%] min-h-[50vh] z-10 bg-slate-50 shadow-xl shadow-slate-500/50 rounded-xl p-4"
+      className="flex flex-col gap-2 min-w-[90%] sm:min-w-[70%] lg:min-w-[60%] max-w-[90%] min-h-[50vh] z-10 bg-slate-50 shadow-xl shadow-slate-500/50 rounded-xl p-4"
       layoutId={selectedId}
     >
       <div className="flex flex-col gap-4 flex-1">
