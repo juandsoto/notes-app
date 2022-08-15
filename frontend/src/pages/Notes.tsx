@@ -75,7 +75,7 @@ const Notes = () => {
       </div>
       <AnimatePresence>
         {selectedId && (
-          <div className="flex items-center justify-center absolute top-0 bottom-0 left-0 right-0">
+          <div className="flex items-center justify-center fixed top-0 bottom-0 left-0 right-0">
             <NoteDetail {...{ selectedId, setSelectedId }} note={notes.find(note => note._id === selectedId) || ({} as NoteSchema)} />
           </div>
         )}
