@@ -1,54 +1,36 @@
-import { useState } from "react";
-import { toast } from "react-hot-toast";
+import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SERVER_URL } from "../constants";
+import { useAuth } from "../context/auth/index";
 
-interface Options {
-  successMessage?: string;
-}
-
-const useDelete = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const remove = async (url: string, config?: RequestInit, props?: Options) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${SERVER_URL}${url}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          ...config?.headers,
-        },
-        ...config,
-      });
-      const data = await response.json();
-
-      console.log({ status: response.status });
-
-      if (response.status === 500) {
-        throw new Error("No pudimos eliminar tu nota, intenta de nuevo");
-      }
-      if (response.status !== 200) {
-        throw new Error(data.error);
-      }
-
-      toast.success(props?.successMessage || "");
-
-      return {
-        data,
-      };
-    } catch (error: any) {
-      toast.error(error.message as string);
-      console.error(error);
-      return;
-    } finally {
-      setLoading(false);
+const useDelete = <Body>(path: string) => {
+  const queryClient = useQueryClient();
+  const {
+    user: { token },
+  } = useAuth();
+  const mutation = useMutation(
+    (body: Body) => {
+      return remove(path, token);
+    },
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries(["notes"]);
+      },
     }
-  };
+  );
 
-  return {
-    remove,
-    loadingDelete: loading,
-  };
+  return mutation;
+};
+
+export const remove = async <Response>(path: string, token: string): Promise<Response> => {
+  return axios
+    .delete(`${SERVER_URL}${path}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(res => res.data);
 };
 
 export default useDelete;

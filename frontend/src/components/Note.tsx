@@ -1,61 +1,35 @@
 import { Dispatch, SetStateAction } from "react";
-import { NoteSchema } from "../types";
 import { BsArchiveFill } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
 import moment from "moment";
 import "moment/locale/es";
-
 import { AiFillDelete } from "react-icons/ai";
 import { motion } from "framer-motion";
-import usePatch from "../hooks/usePatch";
-import { useAuth } from "../context/auth/index";
 import { DotLoader } from "react-spinners";
-import useDelete from "../hooks/useDelete";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
+import { NoteSchema } from "../types";
+import usePatch from "../hooks/usePatch";
+import useDelete from "../hooks/useDelete";
 import { FirstLetterToUppercase } from "../utils";
+
 moment.locale("es");
 interface Props extends NoteSchema {
   index: number;
   setSelectedId: Dispatch<SetStateAction<string | null>>;
-  refetchNotes: (message: string) => void;
   loadingNotes: boolean;
 }
 
 const Note = (props: Props) => {
-  const { _id, title, categories, content, archived, updatedAt, index, setSelectedId, refetchNotes, loadingNotes } = props;
-  const { user } = useAuth();
+  const { _id, title, categories, content, archived, updatedAt, setSelectedId, loadingNotes } = props;
   const navigate = useNavigate();
-  const { loadingPatch, patch } = usePatch();
-  const { loadingDelete, remove } = useDelete();
-  const toggleArchived = async () => {
-    const data = await patch(
-      `/notes/${_id}`,
-      {
-        body: JSON.stringify({ archived: !archived }),
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-          "Content-Type": "application/json",
-        },
-      },
-      { onSuccess: () => {}, successMessage: "" }
-    );
-    refetchNotes(`Nota ${archived ? "desarchivada" : "archivada"}`);
-  };
-
-  const removeNote = async () => {
-    const data = await remove(`/notes/${_id}`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    refetchNotes(`Nota eliminada`);
-  };
+  const { mutate: toggleArchived, isLoading: isLoadingToggleArchived } = usePatch(`/notes/${_id}`);
+  const { mutate: remove, isLoading: isLoadingRemove } = useDelete(`/notes/${_id}`);
 
   return (
     <motion.button
-      disabled={loadingPatch || loadingDelete || loadingNotes}
+      disabled={isLoadingToggleArchived || isLoadingRemove || loadingNotes}
       layoutId={_id}
       className="flex flex-1 shadow-lg shadow-slate-500/50 p-3 rounded-md min-w-[270px] sm:min-w-[300px] max-w-[500px] bg-slate-50"
       onClick={() => setSelectedId(_id)}
@@ -64,15 +38,22 @@ const Note = (props: Props) => {
         <span className="text-lg text-left">{FirstLetterToUppercase(title)}</span>
         <div className="flex justify-between items-center gap-4">
           <span className="text-sm text-left">Actualizada {moment(updatedAt).fromNow()}</span>
-          <div className="flex gap-2">
-            {loadingPatch || loadingDelete || loadingNotes ? (
+          <div className="flex gap-2 justify-center items-center">
+            {isLoadingToggleArchived || isLoadingRemove || loadingNotes ? (
               <DotLoader size={20} color="#3b82f6" />
             ) : (
               <>
                 <BsArchiveFill
                   onClick={e => {
                     e.stopPropagation();
-                    toggleArchived();
+                    toggleArchived(
+                      { archived: !archived },
+                      {
+                        onSuccess: () => {
+                          toast.success(`Nota ${archived ? "desarchivada" : "archivada"}`);
+                        },
+                      }
+                    );
                   }}
                   size={20}
                   className="cursor-pointer"
@@ -83,7 +64,7 @@ const Note = (props: Props) => {
                     e.stopPropagation();
                     navigate(`/notes/edit/${_id}`, { state: { title, categories, content } });
                   }}
-                  className="cursor-pointer"
+                  className="cursor-pointer ml-1"
                   size={20}
                   color="#3b82f6"
                 />
@@ -93,7 +74,14 @@ const Note = (props: Props) => {
                   className="cursor-pointer"
                   onClick={e => {
                     e.stopPropagation();
-                    removeNote();
+                    remove(
+                      { a: 1 },
+                      {
+                        onSuccess: () => {
+                          toast.success(`Nota eliminada`);
+                        },
+                      }
+                    );
                   }}
                 />
               </>

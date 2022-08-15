@@ -1,49 +1,33 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { BeatLoader } from "react-spinners";
-import { LoginType } from "../types";
-import { SERVER_URL } from "../constants";
-import { useAuth } from "../context/auth/index";
 import { Link, useNavigate } from "react-router-dom";
-import Wave from "../assets/images/wave.svg";
 import { BsArrowLeftShort } from "react-icons/bs";
-import { useState } from "react";
 import toast from "react-hot-toast";
+import { LoginType, UserSchema } from "../types";
+import { useAuth } from "../context/auth/index";
+import Wave from "../assets/images/wave.svg";
+import usePost from "../hooks/usePost";
 
 const Login = () => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const login = async (user: LoginType) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${SERVER_URL}/auth/signin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      const data = await response.json();
 
-      if (response.status !== 200) {
-        throw new Error(data.error);
-      }
-      setUser(data);
-      navigate("/notes", { replace: true });
-      return;
-    } catch (error: any) {
-      toast.error(error.message as string);
-      console.error(error);
-      return;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { mutate: login, isLoading } = usePost("/auth/signin");
 
   const formik = useFormik<LoginType>({
     initialValues: { email: "", password: "" },
-    onSubmit: values => login(values),
+    onSubmit: values =>
+      login(values, {
+        onSuccess: (data: UserSchema & { token: string }) => {
+          toast.success(`Bienvenid@ de nuevo ${data.username}`);
+          setUser(data);
+          navigate("/notes", { replace: true });
+        },
+        onError: (error: any) => {
+          toast.error(error?.response?.data.error as string);
+        },
+      }),
     validationSchema: Yup.object().shape({
       email: Yup.string().email("Email inválido").required("Requerido"),
       password: Yup.string().required("Requerido").min(6, "Requiere mas de 6 caractéres"),
@@ -82,7 +66,7 @@ const Login = () => {
             <button
               className="text-lg mt-2 border border-blue-500 bg-blue-500 py-2 px-4 hover:bg-opacity-90 transition-colors"
               type="submit"
-              disabled={formik.isSubmitting}
+              disabled={isLoading}
             >
               {isLoading ? <BeatLoader size={10} color="#164ca3" /> : "Entrar"}
             </button>

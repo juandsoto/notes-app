@@ -1,40 +1,29 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { BeatLoader } from "react-spinners";
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { AiFillTag } from "react-icons/ai";
 import usePost from "../hooks/usePost";
-import { useAuth } from "../context/auth/index";
+
 const AddNote = () => {
-  const { user } = useAuth();
   const [category, setCategory] = useState<string>("");
   const [categoryError, setCategoryError] = useState<string>("");
-  const { loading, post } = usePost();
+  const { mutate: createNote, isLoading: isLoadingCreateNote } = usePost("/notes");
 
   const formik = useFormik({
     initialValues: { title: "", content: "", categories: [] as string[] },
-    onSubmit: values => {
-      post(
-        "/notes",
-        {
-          body: JSON.stringify(values),
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            "Content-Type": "application/json",
-          },
+    onSubmit: values =>
+      createNote(values, {
+        onSuccess: () => {
+          toast.success("Nota creada");
+          formik.setValues(prev => ({ title: "", content: "", categories: [] }));
+          setCategory("");
+          formik.setTouched({ ...formik.touched, title: false, content: false, categories: false });
         },
-        {
-          successMessage: "Nota creada",
-          onSuccess: () => {
-            formik.setValues(prev => ({ title: "", content: "", categories: [] }));
-            setCategory("");
-          },
-        }
-      );
-      formik.setTouched({ ...formik.touched, title: false, content: false, categories: false });
-    },
+      }),
     validationSchema: Yup.object().shape({
-      title: Yup.string().required("Requerido").min(3, "Requiere mas de 3 caractéres"),
+      title: Yup.string().required("Requerido").min(3, "Requiere mas de 3 caractéres").max(40, "Requiere menos de 40 caractéres"),
       content: Yup.string(),
       categories: Yup.array(Yup.string()),
     }),
@@ -111,9 +100,9 @@ const AddNote = () => {
             <button
               className="text-lg mt-2 border border-blue-500 bg-blue-500 py-2 px-4 hover:bg-opacity-90 transition-colors"
               type="submit"
-              disabled={loading}
+              disabled={isLoadingCreateNote}
             >
-              {loading ? <BeatLoader size={10} color="#164ca3" /> : "Crear"}
+              {isLoadingCreateNote ? <BeatLoader size={10} color="#164ca3" /> : "Crear"}
             </button>
           </form>
         </div>

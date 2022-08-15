@@ -1,35 +1,22 @@
-import { CategorySchema } from "../types";
 import moment from "moment";
 import "moment/locale/es";
-
-import { AiFillDelete } from "react-icons/ai";
 import { motion } from "framer-motion";
-import { useAuth } from "../context/auth/index";
 import { DotLoader } from "react-spinners";
+import { AiFillDelete } from "react-icons/ai";
+
+import { CategorySchema } from "../types";
 import useDelete from "../hooks/useDelete";
+import toast from "react-hot-toast";
 
 moment.locale("es");
 interface Props extends CategorySchema {
   index: number;
-  refetchCategories: (message: string) => void;
   loadingCategories: boolean;
 }
 
 const Category = (props: Props) => {
-  const { _id, name, createdAt, index, refetchCategories, loadingCategories } = props;
-  const { user } = useAuth();
-  const { loadingDelete, remove } = useDelete();
-
-  const removeCategory = async () => {
-    const data = await remove(`/categories/${_id}`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    refetchCategories(`Categoría eliminada`);
-  };
+  const { _id, name, createdAt, loadingCategories } = props;
+  const { mutate: remove, isLoading: isLoadingRemove } = useDelete(`/categories/${_id}`);
 
   return (
     <motion.div className="flex flex-1 shadow-lg shadow-slate-500/50 p-3 rounded-md min-w-[250px] max-w-[500px] bg-slate-50">
@@ -38,7 +25,7 @@ const Category = (props: Props) => {
         <div className="flex justify-between items-center gap-4">
           <span className="text-sm">Creada {moment(createdAt).fromNow()}</span>
           <div className="flex gap-2">
-            {loadingDelete || loadingCategories ? (
+            {isLoadingRemove || loadingCategories ? (
               <DotLoader size={20} color="#3b82f6" />
             ) : (
               <>
@@ -47,7 +34,14 @@ const Category = (props: Props) => {
                   size={20}
                   color="crimson"
                   onClick={e => {
-                    removeCategory();
+                    remove(
+                      {},
+                      {
+                        onSuccess: () => {
+                          toast.success("Categoría eliminada");
+                        },
+                      }
+                    );
                   }}
                 />
               </>

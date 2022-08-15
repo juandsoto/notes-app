@@ -1,8 +1,8 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { motion } from "framer-motion";
 import { AiFillCloseCircle, AiFillTag } from "react-icons/ai";
-import { NoteSchema } from "../types";
 import moment from "moment";
+import { NoteSchema } from "../types";
 import { FirstLetterToUppercase } from "../utils";
 
 interface Props {
@@ -15,13 +15,13 @@ const NoteDetail = (props: Props) => {
   const { selectedId, setSelectedId, note } = props;
   return (
     <motion.div
-      className="flex flex-col gap-2 min-w-[90vw] sm:min-w-[70vw] lg:min-w-[60vw] 2xl:min-w-[40vw] min-h-[50vh] z-10 bg-slate-50 shadow-xl shadow-slate-500/50 rounded-xl p-4"
+      className="flex flex-col gap-2 min-w-[90%] sm:min-w-[70%] lg:min-w-[60%] 2xl:min-w-[40%] max-w-[90%] min-h-[50vh] z-10 bg-slate-50 shadow-xl shadow-slate-500/50 rounded-xl p-4"
       layoutId={selectedId}
     >
       <div className="flex flex-col gap-4 flex-1">
-        <div className="flex justify-between items-center py-2 border-b border-darkBlue/20">
+        <div className="flex justify-between items-start py-2 border-b border-darkBlue/20">
           <motion.h1 className="text-xl font-bold text-primary">{FirstLetterToUppercase(note.title)}</motion.h1>
-          <AiFillCloseCircle className="cursor-pointer" onClick={() => setSelectedId(null)} size={30} color="#164ca3" />
+          <AiFillCloseCircle className="cursor-pointer min-w-[30px]" onClick={() => setSelectedId(null)} size={30} color="#164ca3" />
         </div>
         <motion.p>{note.content || "Sin descripción"}</motion.p>
         <div className="flex flex-col gap-2">

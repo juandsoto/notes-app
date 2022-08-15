@@ -1,21 +1,16 @@
-import { SERVER_URL } from "../constants";
-import { useAuth } from "../context/auth/index";
-import { NoteSchema } from "../types";
-import { useEffect, useMemo, useState } from "react";
-import toast from "react-hot-toast";
-import Note from "../components/Note";
+import { useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";
+import { NoteSchema } from "../types";
+import Note from "../components/Note";
 import NoteDetail from "../components/NoteDetail";
 import { debounce } from "lodash";
+import useFetch from "../hooks/useFetch";
 
 const ArchivedNotes = () => {
-  const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [refetch, setRefetch] = useState<{ message: string }>({ message: "" });
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [notes, setNotes] = useState<NoteSchema[]>([]);
+  const { data: notes = [], isLoading } = useFetch<NoteSchema[]>(["archivedNotes"], "/notes/archived");
 
   const filteredNotes: NoteSchema[] = useMemo(
     () => notes?.filter(n => n.categories.some(c => c.name === category || category === "")).filter(note => note.title.toLowerCase().includes(search)),
@@ -34,39 +29,6 @@ const ArchivedNotes = () => {
   );
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value.toLowerCase());
-
-  const refetchNotes = (message: string) => {
-    setRefetch({ message });
-  };
-
-  useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const response = await fetch(`${SERVER_URL}/notes/archived`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-
-        if (response.status !== 200) {
-          throw new Error(data.error);
-        }
-        if (refetch.message) toast.success(refetch.message);
-        setNotes(data);
-        return;
-      } catch (error: any) {
-        toast.error(error.message as string);
-        console.error(error);
-        return;
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchNotes();
-  }, [refetch]);
 
   return (
     <div className="flex flex-col flex-1">
@@ -97,7 +59,7 @@ const ArchivedNotes = () => {
         </div>
         <div className="flex justify-center flex-wrap gap-6">
           {filteredNotes.map((note, i) => {
-            return <Note key={note._id} {...note} index={i} {...{ setSelectedId, refetchNotes }} loadingNotes={isLoading} />;
+            return <Note key={note._id} {...note} index={i} {...{ setSelectedId }} loadingNotes={isLoading} />;
           })}
         </div>
       </div>

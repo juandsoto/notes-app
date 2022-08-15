@@ -1,62 +1,24 @@
-import { useState, useEffect } from "react";
-import { toast } from "react-hot-toast";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { SERVER_URL } from "../constants";
+import { useAuth } from "../context/auth/index";
 
-interface Options {
-  successMessage?: string;
-}
+const useFetch = <Response>(key: string[], path: string) => {
+  const {
+    user: { token },
+  } = useAuth();
+  return useQuery(key, () => get<Response>(path, token));
+};
 
-interface Props {
-  url: string;
-  config?: RequestInit;
-  options?: Options;
-}
-
-const useFetch = <T>({ url, config, options }: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<T>();
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${SERVER_URL}${url}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          ...config?.headers,
-        },
-        ...config,
-      });
-      const data = await response.json();
-
-      if (response.status === 500) {
-        throw new Error("No pudimos guardar tu nota, intenta de nuevo");
-      }
-
-      if (response.status !== 200) {
-        throw new Error(data.error);
-      }
-
-      toast.success(options?.successMessage || "Hecho");
-      console.log({ data });
-      setData(data);
-    } catch (error: any) {
-      toast.error(error.message as string);
-      console.error(error);
-      return;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  return {
-    data,
-    loading,
-  };
+export const get = async <Response>(path: string, token: string): Promise<Response> => {
+  return axios
+    .get(`${SERVER_URL}${path}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(res => res.data);
 };
 
 export default useFetch;

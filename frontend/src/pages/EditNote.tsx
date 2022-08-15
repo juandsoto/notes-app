@@ -1,13 +1,15 @@
-import { FieldArray, useFormik } from "formik";
 import * as Yup from "yup";
+import { useFormik } from "formik";
 import { BeatLoader } from "react-spinners";
 import { useState } from "react";
 import { AiFillTag } from "react-icons/ai";
-import { useAuth } from "../context/auth/index";
+import toast from "react-hot-toast";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../context/auth/index";
 import usePatch from "../hooks/usePatch";
 import { NoteSchema } from "../types";
 import useDelete from "../hooks/useDelete";
+
 const EditNote = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -16,52 +18,39 @@ const EditNote = () => {
   const note = state as Pick<NoteSchema, "title" | "categories" | "content">;
   const [category, setCategory] = useState<string>("");
   const [categoryError, setCategoryError] = useState<string>("");
-  const { loadingPatch, patch } = usePatch();
-  const { loadingDelete, remove } = useDelete();
+  const { mutate: updateNote, isLoading: isLoadingUpdateNote } = usePatch(`/notes/${id}`);
+  // const { loadingDelete, remove } = useDelete();
 
-  const removeCategory = async (name: string) => {
-    if (!note.categories.map(c => c.name).includes(name)) return;
+  // const removeCategory = async (name: string) => {
+  //   if (!note.categories.map(c => c.name).includes(name)) return;
 
-    const id = note.categories.find(c => c.name === name)?.noteCategories._id;
+  //   const id = note.categories.find(c => c.name === name)?.noteCategories._id;
 
-    const data = await remove(
-      `/noteCategories/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-          "Content-Type": "application/json",
-        },
-      },
-      { successMessage: "Categoría eliminada" }
-    );
-  };
+  //   const data = await remove(
+  //     `/noteCategories/${id}`,
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${user.token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     },
+  //     { successMessage: "Categoría eliminada" }
+  //   );
+  // };
 
   const formik = useFormik({
     initialValues: { title: note.title, content: note.content, categories: note.categories.map(c => c.name) },
-    onSubmit: values => {
-      console.log("submit", values);
-      patch(
-        `/notes/${id}`,
-        {
-          body: JSON.stringify(values),
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            "Content-Type": "application/json",
-          },
+    onSubmit: values =>
+      updateNote(values, {
+        onSuccess: () => {
+          formik.setValues({ title: "", content: "", categories: [] });
+          setCategory("");
+          toast.success("Nota actualizada");
+          navigate(-1);
         },
-        {
-          successMessage: "Nota actualizada",
-          onSuccess: () => {
-            formik.setValues(prev => ({ title: "", content: "", categories: [] }));
-            setCategory("");
-            navigate(-1);
-          },
-        }
-      );
-      formik.setTouched({ ...formik.touched, title: false, content: false, categories: false });
-    },
+      }),
     validationSchema: Yup.object().shape({
-      title: Yup.string().required("Requerido").min(3, "Requiere mas de 3 caractéres"),
+      title: Yup.string().required("Requerido").min(3, "Requiere mas de 3 caractéres").max(40, "Requiere menos de 40 caractéres"),
       content: Yup.string(),
       categories: Yup.array(Yup.string()),
     }),
@@ -124,7 +113,7 @@ const EditNote = () => {
                               ...prev,
                               categories: prev.categories.filter(c => c !== e.currentTarget.innerText.toLowerCase()),
                             }));
-                            removeCategory(e.currentTarget.innerText.toLowerCase());
+                            // removeCategory(e.currentTarget.innerText.toLowerCase());
                           }}
                           className="text-md capitalize hover:text-red-600 cursor-pointer"
                         >
@@ -139,9 +128,9 @@ const EditNote = () => {
             <button
               className="text-lg mt-2 border border-blue-500 bg-blue-500 py-2 px-4 hover:bg-opacity-90 transition-colors"
               type="submit"
-              disabled={loadingPatch}
+              disabled={isLoadingUpdateNote}
             >
-              {loadingPatch ? <BeatLoader size={10} color="#164ca3" /> : "Actualizar"}
+              {isLoadingUpdateNote ? <BeatLoader size={10} color="#164ca3" /> : "Actualizar"}
             </button>
           </form>
         </div>

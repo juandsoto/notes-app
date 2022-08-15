@@ -1,49 +1,9 @@
-import { SERVER_URL } from "../constants";
-import { useAuth } from "../context/auth/index";
-import { CategorySchema } from "../types";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import Note from "../components/Note";
 import Category from "../components/Category";
+import useFetch from "../hooks/useFetch";
+import { CategorySchema } from "../types";
 
 const Categories = () => {
-  const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [refetch, setRefetch] = useState<{ message: string }>({ message: "" });
-  const [categories, setCategories] = useState<CategorySchema[]>([]);
-
-  const refetchCategories = (message: string) => {
-    setRefetch({ message });
-  };
-
-  useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const response = await fetch(`${SERVER_URL}/categories`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-
-        if (response.status !== 200) {
-          throw new Error(data.error);
-        }
-        if (refetch.message.length) toast.success(refetch.message);
-        setCategories(data);
-        return;
-      } catch (error: any) {
-        toast.error(error.message as string);
-        console.error(error);
-        return;
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchNotes();
-  }, [refetch]);
+  const { data: categories = [], isLoading } = useFetch<CategorySchema[]>(["categories"], "/categories");
 
   return (
     <div className="flex flex-col flex-1">
@@ -60,7 +20,7 @@ const Categories = () => {
         </div>
         <div className="flex justify-center flex-wrap gap-6">
           {categories.map((category, i) => {
-            return <Category key={category._id} {...category} index={i} {...{ refetchCategories }} loadingCategories={isLoading} />;
+            return <Category key={category._id} {...category} index={i} loadingCategories={isLoading} />;
           })}
         </div>
       </div>

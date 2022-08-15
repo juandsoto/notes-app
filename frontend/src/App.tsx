@@ -1,5 +1,5 @@
-import Sidebar from "./components/Sidebar";
 import { Outlet } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
 import Wave from "./assets/images/wave.svg";
 
 function App() {

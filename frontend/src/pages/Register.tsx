@@ -1,48 +1,35 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { BsArrowLeftShort } from "react-icons/bs";
-import { RegisterType } from "../types";
-import Wave from "../assets/images/wave.svg";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { BeatLoader } from "react-spinners";
+import { RegisterType, UserSchema } from "../types";
+import Wave from "../assets/images/wave.svg";
 import { useAuth } from "../context/auth";
 import { SERVER_URL } from "../constants";
-import toast from "react-hot-toast";
+import usePost from "../hooks/usePost";
 
 const Register = () => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const register = async (user: RegisterType) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${SERVER_URL}/auth/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      const data = await response.json();
 
-      if (response.status !== 200) {
-        throw new Error(data.error);
-      }
-      setUser(data);
-      navigate("/notes", { replace: true });
-      return;
-    } catch (error: any) {
-      toast.error(error.message as string);
-      console.error(error);
-      return;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { mutate: register, isLoading } = usePost("/auth/signup");
+
   const formik = useFormik<RegisterType>({
     initialValues: { username: "", email: "", password: "" },
-    onSubmit: values => register(values),
+    onSubmit: values =>
+      register(values, {
+        onSuccess: (data: UserSchema & { token: string }) => {
+          toast.success(`Bienvenid@ ${data.username}`);
+          setUser(data);
+          navigate("/notes", { replace: true });
+        },
+        onError: (error: any) => {
+          toast.error(error?.response?.data.error as string);
+        },
+      }),
     validationSchema: Yup.object().shape({
       username: Yup.string().required("Requerido").min(3, "Requiere mas de 3 caractéres"),
       email: Yup.string().email("Email inválido").required("Requerido"),
@@ -87,7 +74,7 @@ const Register = () => {
             <button
               className="text-lg mt-2 border border-blue-500 bg-blue-500 py-2 px-4 hover:bg-opacity-90 transition-colors"
               type="submit"
-              disabled={formik.isSubmitting}
+              disabled={isLoading}
             >
               {isLoading ? <BeatLoader size={10} color="#164ca3" /> : "¡Registrate!"}
             </button>

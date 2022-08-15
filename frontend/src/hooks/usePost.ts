@@ -1,55 +1,38 @@
-import { useState } from "react";
-import { toast } from "react-hot-toast";
+import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SERVER_URL } from "../constants";
+import { useAuth } from "../context/auth";
 
-interface Options {
-  successMessage: string;
-  onSuccess: () => void;
-}
-
-const usePost = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const post = async (url: string, config: RequestInit, options: Options) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${SERVER_URL}${url}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...config?.headers,
-        },
-        ...config,
-      });
-      const data = await response.json();
-
-      if (response.status === 500) {
-        throw new Error("No pudimos guardar tu nota, intenta de nuevo");
-      }
-
-      if (response.status !== 201) {
-        throw new Error(data.error);
-      }
-
-      if (options.successMessage.length) toast.success(options.successMessage);
-
-      options.onSuccess();
-      return {
-        data,
-      };
-    } catch (error: any) {
-      toast.error(error.message as string);
-      console.error(error);
-      return;
-    } finally {
-      setLoading(false);
+const usePost = <Body>(path: string) => {
+  const queryClient = useQueryClient();
+  const {
+    user: { token },
+  } = useAuth();
+  const mutation = useMutation(
+    (body: Body) => {
+      return post(path, body, token);
+    },
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries(["notes"]);
+      },
     }
-  };
+  );
 
-  return {
-    post,
-    loading,
-  };
+  return mutation;
+};
+
+export const post = async <Body>(path: string, body: Body, token: string): Promise<any> => {
+  const headers: { Authotization: string } | {} = token.length ? { Authorization: `Bearer ${token}` } : {};
+
+  return axios
+    .post(`${SERVER_URL}${path}`, body, {
+      headers: {
+        "Content-Type": "application/json",
+        ...headers,
+      },
+    })
+    .then(res => res.data);
 };
 
 export default usePost;

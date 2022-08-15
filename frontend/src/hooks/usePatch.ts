@@ -1,51 +1,36 @@
-import { useState } from "react";
-import { toast } from "react-hot-toast";
+import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SERVER_URL } from "../constants";
-interface Options {
-  successMessage: string;
-  onSuccess: () => void;
-}
+import { useAuth } from "../context/auth/index";
 
-const usePatch = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const patch = async (url: string, config: RequestInit, options: Options) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${SERVER_URL}${url}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          ...config?.headers,
-        },
-        ...config,
-      });
-      const data = await response.json();
-
-      if (response.status === 500) {
-        throw new Error("No pudimos archivar tu nota, intenta de nuevo");
-      }
-      if (response.status !== 200) {
-        throw new Error(data.error);
-      }
-      if (options.successMessage.length) toast.success(options.successMessage);
-      options.onSuccess();
-      return {
-        data,
-      };
-    } catch (error: any) {
-      toast.error(error.message as string);
-      console.error(error);
-      return;
-    } finally {
-      setLoading(false);
+const usePatch = <Body>(path: string) => {
+  const queryClient = useQueryClient();
+  const {
+    user: { token },
+  } = useAuth();
+  const mutation = useMutation(
+    (body: Body) => {
+      return patch(path, body, token);
+    },
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries(["notes"]);
+      },
     }
-  };
+  );
 
-  return {
-    patch,
-    loadingPatch: loading,
-  };
+  return mutation;
+};
+
+export const patch = async <Body>(path: string, body: Body, token: string): Promise<any> => {
+  return axios
+    .patch(`${SERVER_URL}${path}`, body, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(res => res.data);
 };
 
 export default usePatch;

@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../context/auth/index";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { CgClose } from "react-icons/cg";
 import { useState } from "react";
+import { useAuth } from "../context/auth/index";
 const links = [
   { to: "/notes", title: "Notas" },
   { to: "/categories", title: "Categorías" },
