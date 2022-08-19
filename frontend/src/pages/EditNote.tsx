@@ -9,6 +9,9 @@ import { useAuth } from "../context/auth/index";
 import usePatch from "../hooks/usePatch";
 import { NoteSchema } from "../types";
 import useDelete from "../hooks/useDelete";
+import AutocompleteInput from "../components/AutocompleteInput";
+import axios from "axios";
+import { SERVER_URL } from "../constants";
 
 const EditNote = () => {
   const { user } = useAuth();
@@ -19,24 +22,19 @@ const EditNote = () => {
   const [category, setCategory] = useState<string>("");
   const [categoryError, setCategoryError] = useState<string>("");
   const { mutate: updateNote, isLoading: isLoadingUpdateNote } = usePatch(`/notes/${id}`);
-  // const { loadingDelete, remove } = useDelete();
 
-  // const removeCategory = async (name: string) => {
-  //   if (!note.categories.map(c => c.name).includes(name)) return;
+  const removeCategory = async (name: string) => {
+    if (!note.categories.map(c => c.name).includes(name)) return;
 
-  //   const id = note.categories.find(c => c.name === name)?.noteCategories._id;
+    const id = note.categories.find(c => c.name === name)?.noteCategories._id;
 
-  //   const data = await remove(
-  //     `/noteCategories/${id}`,
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${user.token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     },
-  //     { successMessage: "Categoría eliminada" }
-  //   );
-  // };
+    const data = await axios.delete(`${SERVER_URL}/noteCategories/${id}`, {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  };
 
   const formik = useFormik({
     initialValues: { title: note.title, content: note.content, categories: note.categories.map(c => c.name) },
@@ -76,7 +74,13 @@ const EditNote = () => {
                 <label htmlFor="category">Categorías</label>
                 <div className="flex flex-col gap-1">
                   <div className="flex gap-1">
-                    <input placeholder="software" name="category" onBlur={formik.handleBlur} onChange={e => setCategory(e.target.value)} value={category} />
+                    <AutocompleteInput
+                      handleChange={(value: string) => setCategory(value)}
+                      value={category}
+                      inputProps={{
+                        onBlur: formik.handleBlur,
+                      }}
+                    />
                     <button
                       className="bg-darkBlue py-1 px-2 text-slate-50"
                       type="button"
@@ -113,7 +117,7 @@ const EditNote = () => {
                               ...prev,
                               categories: prev.categories.filter(c => c !== e.currentTarget.innerText.toLowerCase()),
                             }));
-                            // removeCategory(e.currentTarget.innerText.toLowerCase());
+                            removeCategory(e.currentTarget.innerText.toLowerCase());
                           }}
                           className="text-md capitalize hover:text-red-600 cursor-pointer"
                         >

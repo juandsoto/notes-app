@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import { AiFillTag } from "react-icons/ai";
 import usePost from "../hooks/usePost";
+import AutocompleteInput from "../components/AutocompleteInput";
 
 const AddNote = () => {
   const [category, setCategory] = useState<string>("");
@@ -49,7 +50,13 @@ const AddNote = () => {
                 <label htmlFor="category">Categorías</label>
                 <div className="flex flex-col gap-1">
                   <div className="flex gap-1">
-                    <input placeholder="software" name="category" onBlur={formik.handleBlur} onChange={e => setCategory(e.target.value)} value={category} />
+                    <AutocompleteInput
+                      handleChange={(value: string) => setCategory(value)}
+                      value={category}
+                      inputProps={{
+                        onBlur: formik.handleBlur,
+                      }}
+                    />
                     <button
                       className="bg-darkBlue py-1 px-2 text-slate-50"
                       type="button"
