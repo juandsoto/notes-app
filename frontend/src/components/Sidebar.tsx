@@ -3,11 +3,20 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { CgClose } from "react-icons/cg";
 import { useState } from "react";
 import { useAuth } from "../context/auth/index";
-const links = [
+import { BsFillGearFill } from "react-icons/bs";
+
+interface Link {
+  to: string;
+  title?: string;
+  icon?: JSX.Element;
+}
+
+const links: Link[] = [
   { to: "/notes", title: "Notas" },
   { to: "/categories", title: "Categorías" },
   { to: "/archived", title: "Archivo" },
   { to: "/notes/add", title: "Agregar Nota" },
+  { to: "/config", icon: <BsFillGearFill /> },
 ];
 
 const Sidebar = () => {
@@ -16,7 +25,7 @@ const Sidebar = () => {
   const [open, setOpen] = useState<boolean>(false);
   const linkClassName = "bg-primary scale-110";
   return (
-    <div className="relative flex sm:h-full sm:flex-col items-center justify-between sm:justify-start p-2 sm:gap-y-10 bg-slate-50 rounded-xl">
+    <div className="relative flex sm:h-full sm:flex-col items-center justify-between sm:justify-start p-2 sm:gap-y-10  rounded-xl">
       <div className="flex gap-2 sm:gap-4 items-center">
         <div className="w-[20%] sm:w-[40%] max-w-[100px]">
           <img className="h-full w-full" src="https://cdn.worldvectorlogo.com/logos/notek.svg" alt="logo" />
@@ -32,9 +41,12 @@ const Sidebar = () => {
       )}
       <nav className="hidden flex-1 sm:flex justify-center">
         <ul className="flex flex-col sm:flex-col justify-center text-center sm:justify-start items-center gap-4">
-          {links.map(({ to, title }) => (
+          {links.map(({ to, title, icon }) => (
             <li key={title} className={["py-1 px-2 rounded-xl hover:scale-95 transition-all", pathname === to ? linkClassName : ""].join(" ")}>
-              <Link to={to}>{title}</Link>
+              <Link to={to} className="flex gap-1 items-center">
+                {icon}
+                {title}
+              </Link>
             </li>
           ))}
         </ul>
@@ -49,7 +61,7 @@ const Sidebar = () => {
           <nav className="justify-center">
             <ul className="flex flex-col justify-center sm:justify-start items-center gap-2">
               {links.map(({ to, title }) => (
-                <li key={title} className={["py-1 px-2 rounded-xl hover:underline transition-all", pathname === to ? linkClassName : ""].join(" ")}>
+                <li key={to} className={["py-1 px-2 rounded-xl hover:underline transition-all", pathname === to ? linkClassName : ""].join(" ")}>
                   <Link to={to}>{title}</Link>
                 </li>
               ))}

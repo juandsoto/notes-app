@@ -12,19 +12,19 @@
 
 @layer base {
   body {
-    @apply bg-slate-50;
+    @apply bg-slate-50 dark:bg-slate-900 text-black dark:text-white;
   }
 
   input {
-    @apply p-2 outline-none border focus:border-blue-500 rounded-md shadow-lg;
+    @apply p-2 bg-slate-50 dark:bg-slate-900  text-black dark:text-white outline-none border border-slate-50 dark:border-slate-900 focus:border-primary dark:focus:border-darkBlue rounded-md shadow-md;
   }
 
   textarea {
-    @apply p-2 outline-none border focus:border-blue-500 rounded-md shadow-lg max-h-[100px];
+    @apply p-2 bg-slate-50 dark:bg-slate-900 text-black dark:text-white outline-none border border-slate-50 dark:border-slate-900 focus:border-primary dark:focus:border-darkBlue rounded-md shadow-md max-h-[100px];
   }
 
   select {
-    @apply p-2 outline-none rounded-md shadow-lg shadow-darkBlue max-h-[100px];
+    @apply p-2 outline-none rounded-md shadow-md shadow-darkBlue max-h-[100px];
   }
   option {
     @apply border-none outline-none;
@@ -32,6 +32,14 @@
 
   button {
     @apply shadow-lg rounded-md;
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    @apply hidden;
+  }
+
+  .bg-main {
+    @apply bg-slate-50 dark:bg-slate-900 text-black dark:text-white;
   }
 }
 

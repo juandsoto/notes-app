@@ -26,7 +26,7 @@ const AutocompleteInput = ({ inputProps, handleChange, value }: Props) => {
         <input {...inputProps} {...getInputProps()} />
       </div>
       {groupedOptions.length > 0 ? (
-        <ul className="px-1 w-[200px] z-10 absolute max-h-[200px] overflow-y-scroll bg-slate-50 rounded-lg" {...getListboxProps()}>
+        <ul className="px-1 w-[200px] z-10 absolute max-h-[200px] overflow-y-scroll bg-main rounded-lg" {...getListboxProps()}>
           {(groupedOptions as typeof currentCategories)
             .sort((a, b) => 0 - (a.name > b.name ? -1 : 1))
             .map((option, index) => (

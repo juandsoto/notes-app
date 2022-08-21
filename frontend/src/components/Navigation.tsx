@@ -9,6 +9,7 @@ import Notes from "../pages/Notes";
 import Register from "../pages/Register";
 import Welcome from "../pages/Welcome";
 import { useAuth } from "../context/auth/index";
+import Config from "../pages/Config";
 
 const Protected = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
   const { user } = useAuth();
@@ -73,6 +74,16 @@ const Navigation = () => {
           }
         >
           <Route index element={<ArchivedNotes />} />
+        </Route>
+        <Route
+          path="/config"
+          element={
+            <Protected>
+              <App />
+            </Protected>
+          }
+        >
+          <Route index element={<Config />} />
         </Route>
         <Route
           path="/signup"

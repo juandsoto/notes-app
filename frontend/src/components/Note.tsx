@@ -32,7 +32,7 @@ const Note = (props: Props) => {
     <motion.button
       disabled={isLoadingToggleArchived || isLoadingRemove || loadingNotes}
       layoutId={_id}
-      className="flex flex-1 shadow-lg shadow-slate-500/50 p-3 rounded-md min-w-[270px] sm:min-w-[300px] max-w-[500px] bg-slate-50"
+      className="flex flex-1 shadow-md shadow-slate-500/50 dark:shadow-slate-900/50 p-3 rounded-md min-w-[270px] sm:min-w-[300px] max-w-[500px] bg-main"
       onClick={() => setSelectedId(_id)}
     >
       <motion.div className="flex flex-col w-full">

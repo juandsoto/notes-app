@@ -31,7 +31,7 @@ const AddNote = () => {
   });
   return (
     <div className="flex flex-1 items-center justify-center">
-      <div className="bg-slate-50 min-w-[90%] md:min-w-[80%] lg:min-w-[70%] 2xl:min-w-[60%] max-w-[700px] min-h-[60%] px-4 py-6 sm:px-8 sm:py-12 rounded-lg shadow-xl shadow-slate-500/50">
+      <div className="bg-main min-w-[90%] md:min-w-[80%] lg:min-w-[70%] 2xl:min-w-[60%] max-w-[700px] min-h-[60%] px-4 py-6 sm:px-8 sm:py-12 rounded-lg shadow-md shadow-slate-500/50 dark:shadow-slate-900/50">
         <div className="flex-1 flex flex-col items-center justify-start gap-8">
           <h1 className="text-2xl">¡Crea tu nueva nota!</h1>
           <form className="flex flex-col gap-4 min-w-[100%] sm:min-w-[80%]" onSubmit={formik.handleSubmit}>
@@ -105,7 +105,7 @@ const AddNote = () => {
               </div>
             </div>
             <button
-              className="text-lg mt-2 border border-blue-500 bg-blue-500 py-2 px-4 hover:bg-opacity-90 transition-colors"
+              className="text-lg mt-2 border border-primary bg-primary py-2 px-4 hover:bg-opacity-90 transition-colors"
               type="submit"
               disabled={isLoadingCreateNote}
             >

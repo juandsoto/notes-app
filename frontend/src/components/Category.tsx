@@ -20,7 +20,7 @@ const Category = (props: Props) => {
   const { mutate: remove, isLoading: isLoadingRemove } = useDelete(`/categories/${_id}`);
 
   return (
-    <motion.div className="flex flex-1 shadow-lg shadow-slate-500/50 p-3 rounded-md min-w-[250px] max-w-[500px] bg-slate-50">
+    <motion.div className="flex flex-1 shadow-md shadow-slate-500/50 dark:shadow-slate-900/50 p-3 rounded-md min-w-[250px] max-w-[500px] bg-main">
       <motion.div className="flex flex-col w-full">
         <span className="text-lg capitalize text-left">{name}</span>
         <div className="flex justify-between items-center gap-4">
